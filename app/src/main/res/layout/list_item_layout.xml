@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="6dip" >
+
+    <ImageView
+        android:id="@+id/iconEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:src="@android:drawable/ic_menu_edit"
+        android:onClick="editItem"/>
+
+    <TextView
+        android:text="hi"
+        android:id="@+id/description"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toLeftOf="@id/iconEdit"
+
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textSize="20sp" />
+
+    <TextView
+        android:text="derp"
+        android:id="@+id/stopNumber"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="26dip"
+        android:layout_below="@id/description"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/iconEdit"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textSize="16sp" />
+
+
+
+</RelativeLayout> 
