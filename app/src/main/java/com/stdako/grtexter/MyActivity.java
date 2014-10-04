@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class MyActivity extends Activity {
@@ -29,6 +30,8 @@ public class MyActivity extends Activity {
 
     final public static String name = "name";
     final public static String num = "num";
+    final public static String pattern = "[^0-9\\s]";
+    final public static Pattern r = Pattern.compile(pattern);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,62 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
+    public AlertDialog.Builder generateErrorDialog (String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_error_title);
+        builder.setMessage(msg);
+        builder.setPositiveButton(R.string.dialog_error_posbtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // do nothing
+            }
+        });
+
+        return builder;
+    }
+
+    public String[] checkInput(View dialogView) {
+        /*
+        check inputs to see if they're legit.
+          - stop name length is < 49 chars
+          - stop number length is < 9 chars
+          - stop number has non-numeric/whitespace chars
+          - stop number isn't currently in use
+        return empty string if all is good.
+        return other message otherwise.
+         */
+
+        EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
+        EditText etStop = (EditText) dialogView.findViewById(R.id.itemStopNumber);
+        String stopName = etName.getText().toString();
+        String stopNumber = etStop.getText().toString();
+        String msg = "";
+
+        if (stopNumber.length() > 8) {
+            msg = getString(R.string.dialog_error_msg_num_toolong);
+        } else if (stopName.length() > 48) {
+            msg = getString(R.string.dialog_error_msg_name_toolong);
+        } else if (r.matcher(pattern).find()) {
+            msg = getString(R.string.dialog_error_msg_num_invalidchars) ;
+        }
+
+        // check to see if stop number is being used already
+        for (Map<String,String> datum : data) {
+//          String curStopName = datum.get(name);
+            String curStopNumber = datum.get(num);
+//            if (curStopName.equals(stopName)) {
+//                msg = getString(R.string.dialog_error_msg_name_duplicate);
+//                break;
+//            }
+            if (curStopNumber.equals(stopNumber)) {
+                msg = getString(R.string.dialog_error_msg_num_duplicate);
+                break;
+            }
+        }
+
+        return new String[] {msg, stopName, stopNumber};
+    }
+
     public void editItem(View view) {
         // generate edit dialog
         final View dialogView = generateDialogView(getString(R.string.dialog_edit_title), true, view);
@@ -111,17 +170,27 @@ public class MyActivity extends Activity {
         builder.setPositiveButton( getString(R.string.dialog_edit_posbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                for (Map<String, String> datum : data) {
-                    if (datum.get(num).equals(stopNumber)) {
-                        EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
-                        EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-                        String newStopName = etStopNameNew.getText().toString();
-                        String newStopNumber = etStopNumberNew.getText().toString();
-                        datum.put(name, newStopName);
-                        datum.put(num, newStopNumber);
-                        adapter.notifyDataSetChanged();
-                        break;
+
+                String[] info = checkInput(dialogView);
+                String msg = info[0];
+
+                if (msg.equals("")) {
+                    for (Map<String, String> datum : data) {
+                        if (datum.get(num).equals(stopNumber)) {
+                            EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
+                            EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
+                            String newStopName = etStopNameNew.getText().toString();
+                            String newStopNumber = etStopNumberNew.getText().toString();
+                            datum.put(name, newStopName);
+                            datum.put(num, newStopNumber);
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
                     }
+                } else {
+                    AlertDialog.Builder builderError = generateErrorDialog(msg);
+                    builderError.show();
+                    return;
                 }
             }
         });
@@ -156,47 +225,22 @@ public class MyActivity extends Activity {
         builder.setPositiveButton(getString(R.string.dialog_add_posbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
-                EditText etStop = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-                String stopName = etName.getText().toString();
-                String stopNumber = etStop.getText().toString();
+                String[] info = checkInput(dialogView);
+                String msg = info[0];
+                String stopName = info[1];
+                String stopNumber = info[2];
 
-                // check to see if stop number is being used already
-                for (Map<String,String> datum : data) {
-                    String curStopName = datum.get(name);
-                    String curStopNumber = datum.get(num);
-                    String msg = "";
-                    Boolean flag = false;
-//                    if (curStopName.equals(stopName)) {
-//                        flag = true;
-//                        msg = getString(R.string.dialog_error_msg_name);
-//                    }
-                    if (curStopNumber.equals(stopNumber)) {
-                        flag = true;
-                        msg = getString(R.string.dialog_error_msg_num);
-                    }
-
-                    if (flag) {
-                        AlertDialog.Builder builderError = new AlertDialog.Builder(view.getContext());
-                        builderError.setTitle(R.string.dialog_error_title);
-                        builderError.setMessage(msg);
-                        builderError.setPositiveButton(R.string.dialog_error_posbtn, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // do nothing
-                            }
-                        });
-
-                        builderError.show();
-                        return;
-                    }
+                if (msg.equals("")) {
+                    Map<String,String> datum = new HashMap<String, String>(2);
+                    datum.put(name, stopName);
+                    datum.put(num, stopNumber);
+                    data.add(datum);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    AlertDialog.Builder builderError = generateErrorDialog(msg);
+                    builderError.show();
+                    return;
                 }
-
-                Map<String,String> datum = new HashMap<String, String>(2);
-                datum.put(name, stopName);
-                datum.put(num, stopNumber);
-                data.add(datum);
-                adapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton(getString(R.string.dialog_add_negbtn), new DialogInterface.OnClickListener() {
