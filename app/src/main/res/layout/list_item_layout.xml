@@ -15,7 +15,7 @@
 
     <TextView
         android:text="hi"
-        android:id="@+id/description"
+        android:id="@+id/stopName"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="26dip"
-        android:layout_below="@id/description"
+        android:layout_below="@id/stopName"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/iconEdit"

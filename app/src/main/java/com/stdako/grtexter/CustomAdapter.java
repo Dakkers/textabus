@@ -56,7 +56,7 @@ public class CustomAdapter extends ArrayAdapter<Pair> {
             // This is how you obtain a reference to the TextViews.
             // These TextViews are created in the XML files we defined.
 
-            TextView tt = (TextView) v.findViewById(R.id.description);
+            TextView tt = (TextView) v.findViewById(R.id.stopName);
             TextView tv = (TextView) v.findViewById(R.id.stopNumber);
 
 
