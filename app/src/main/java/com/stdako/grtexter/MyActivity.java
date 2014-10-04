@@ -27,6 +27,9 @@ public class MyActivity extends Activity {
     SimpleAdapter adapter;
     List<Map<String, String>> data;
 
+    final public static String name = "name";
+    final public static String num = "num";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // don't touch pls
@@ -48,17 +51,16 @@ public class MyActivity extends Activity {
         // temp data
         data = new ArrayList<Map<String, String>>();
         Map<String, String> datum1 = new HashMap<String, String>(2);
-        datum1.put("name", "Home to UW");
-        datum1.put("num", "1161");
+        datum1.put(name, "Home to UW");
+        datum1.put(num, "1161");
         data.add(datum1);
         Map<String, String> datum2 = new HashMap<String, String>(2);
-        datum2.put("name", "UW Engineering to Home");
-        datum2.put("num", "1124 9");
+        datum2.put(name, "UW Engineering to Home");
+        datum2.put(num, "1124 9");
         data.add(datum2);
 
         // define a new adapter
-        adapter = new SimpleAdapter(this, data,
-                R.layout.list_item_layout, new String[]{"name", "num"},
+        adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
 
         // assign adapter to listView
@@ -97,26 +99,26 @@ public class MyActivity extends Activity {
     }
 
     public void editItem(View view) {
-        final View dialogView = generateDialogView("Edit Bus Stop", true, view);
+        // generate edit dialog
+        final View dialogView = generateDialogView(getString(R.string.dialog_edit_title), true, view);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         view = (View) view.getParent();
         TextView tvName = (TextView) view.findViewById(R.id.stopName);
         TextView tvStop = (TextView) view.findViewById(R.id.stopNumber);
-        final String stopName = tvName.getText().toString();
         final String stopNumber = tvStop.getText().toString();
 
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton( getString(R.string.dialog_edit_posbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 for (Map<String, String> datum : data) {
-                    if (datum.get("num").equals(stopNumber)) {
+                    if (datum.get(num).equals(stopNumber)) {
                         EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
                         EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
                         String newStopName = etStopNameNew.getText().toString();
                         String newStopNumber = etStopNumberNew.getText().toString();
-                        datum.put("name", newStopName);
-                        datum.put("num", newStopNumber);
+                        datum.put(name, newStopName);
+                        datum.put(num, newStopNumber);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -124,20 +126,18 @@ public class MyActivity extends Activity {
             }
         });
 
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( getString(R.string.dialog_edit_neubtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // do nothing
             }
         });
 
-        builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
-
+        builder.setNegativeButton( getString(R.string.dialog_edit_negbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
                 for (Map<String, String> datum : data) {
-                    if (datum.get("num").equals(stopNumber)) {
+                    if (datum.get(num).equals(stopNumber)) {
                         data.remove(datum);
                         adapter.notifyDataSetChanged();
                         break;
@@ -145,17 +145,15 @@ public class MyActivity extends Activity {
                 }
             }
         });
-
         builder.setView(dialogView);
         builder.show();
-
     }
 
     public void addItem(final View view) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View dialogView = generateDialogView("Add Bus Stop", false, view);
+        final View dialogView = generateDialogView( getString(R.string.dialog_add_title), false, view);
 
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_add_posbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
@@ -163,40 +161,45 @@ public class MyActivity extends Activity {
                 String stopName = etName.getText().toString();
                 String stopNumber = etStop.getText().toString();
 
+                // check to see if stop number is being used already
                 for (Map<String,String> datum : data) {
-                    String curStopName = datum.get("name");
-                    String curStopNumber = datum.get("num");
+                    String curStopName = datum.get(name);
+                    String curStopNumber = datum.get(num);
                     String msg = "";
                     Boolean flag = false;
-                    if (curStopName.equals(stopName)) {
+//                    if (curStopName.equals(stopName)) {
+//                        flag = true;
+//                        msg = getString(R.string.dialog_error_msg_name);
+//                    }
+                    if (curStopNumber.equals(stopNumber)) {
                         flag = true;
-                        msg = "stop name";
-                    } else if (curStopNumber.equals(stopNumber)) {
-                        flag = true;
-                        msg = "stop number";
+                        msg = getString(R.string.dialog_error_msg_num);
                     }
 
-//                    if (flag) {
-//                        AlertDialog.Builder builderError = new AlertDialog.Builder(view.getContext());
-//                        builderError.setTitle("Invalid input!");
-//                        builderError.setMessage("That " + msg + " is already in use.");
-//                        builderError.setPositiveButton("Sorry!", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                builder.
-//                            }
-//                        });
-//                    }
+                    if (flag) {
+                        AlertDialog.Builder builderError = new AlertDialog.Builder(view.getContext());
+                        builderError.setTitle(R.string.dialog_error_title);
+                        builderError.setMessage(msg);
+                        builderError.setPositiveButton(R.string.dialog_error_posbtn, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // do nothing
+                            }
+                        });
+
+                        builderError.show();
+                        return;
+                    }
                 }
 
                 Map<String,String> datum = new HashMap<String, String>(2);
-                datum.put("name", stopName);
-                datum.put("num", stopNumber);
+                datum.put(name, stopName);
+                datum.put(num, stopNumber);
                 data.add(datum);
                 adapter.notifyDataSetChanged();
             }
         });
-        builder.setNegativeButton("Never Mind", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.dialog_add_negbtn), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // narp
@@ -221,6 +224,7 @@ public class MyActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             return true;
         }
         return super.onOptionsItemSelected(item);

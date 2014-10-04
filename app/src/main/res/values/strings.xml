@@ -2,10 +2,19 @@
 <resources>
 
     <string name="app_name">GRTexter</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_display_message">DisplayMessageActivity</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string name="dialog_edit_title">Edit Bus Stop</string>
+    <string name="dialog_edit_posbtn">Save</string>
+    <string name="dialog_edit_neubtn">Cancel</string>
+    <string name="dialog_edit_negbtn">Remove</string>
+    <string name="dialog_add_title">Add Bus Stop</string>
+    <string name="dialog_add_posbtn">Add</string>
+    <string name="dialog_add_negbtn">Never Mind</string>
+    <string name="dialog_error_title">Invalid input!</string>
+    <string name="dialog_error_msg_name">That stop name is already in use.</string>
+    <string name="dialog_error_msg_num">That stop number is already in use.</string>
+    <string name="dialog_error_posbtn">Sorry!</string>
 
 </resources>
