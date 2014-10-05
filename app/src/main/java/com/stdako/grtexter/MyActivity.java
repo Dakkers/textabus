@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ public class MyActivity extends Activity {
     final public static String num = "num";
     final public static String pattern = "[^0-9\\s]";
     final public static Pattern r = Pattern.compile(pattern);
+    final SmsManager smsManager = SmsManager.getDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MyActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
+                smsManager.sendTextMessage("57555", null, stopNumber, null, null);
             }
         });
 
