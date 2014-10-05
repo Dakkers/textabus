@@ -136,7 +136,7 @@ public class MyActivity extends Activity {
             msg = getString(R.string.dialog_error_msg_num_toolong);
         } else if (stopName.length() > 48) {
             msg = getString(R.string.dialog_error_msg_name_toolong);
-        } else if (r.matcher(pattern).find()) {
+        } else if (!r.matcher(pattern).find()) {
             msg = getString(R.string.dialog_error_msg_num_invalidchars) ;
         }
 
