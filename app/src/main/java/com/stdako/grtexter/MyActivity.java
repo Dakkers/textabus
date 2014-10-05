@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -47,7 +48,7 @@ public class MyActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
-                System.out.println(tv.getText());
+                String stopNumber = (String) tv.getText();
             }
         });
 
@@ -97,7 +98,6 @@ public class MyActivity extends Activity {
             etName.setText(stopName);
             etNumber.setText(stopNumber);
         }
-
         return dialogView;
     }
 
@@ -111,11 +111,10 @@ public class MyActivity extends Activity {
                 // do nothing
             }
         });
-
         return builder;
     }
 
-    public String[] checkInput(View dialogView) {
+    public String[] checkInput(View dialogView, Boolean flag) {
         /*
         check inputs to see if they're legit.
           - stop name length is < 49 chars
@@ -136,123 +135,132 @@ public class MyActivity extends Activity {
             msg = getString(R.string.dialog_error_msg_num_toolong);
         } else if (stopName.length() > 48) {
             msg = getString(R.string.dialog_error_msg_name_toolong);
-        } else if (!r.matcher(pattern).find()) {
-            msg = getString(R.string.dialog_error_msg_num_invalidchars) ;
+        } else if (r.matcher(stopNumber).find()) {
+            msg = getString(R.string.dialog_error_msg_num_invalidchars);
         }
 
         // check to see if stop number is being used already
-        for (Map<String,String> datum : data) {
-//          String curStopName = datum.get(name);
-            String curStopNumber = datum.get(num);
-//            if (curStopName.equals(stopName)) {
-//                msg = getString(R.string.dialog_error_msg_name_duplicate);
-//                break;
-//            }
-            if (curStopNumber.equals(stopNumber)) {
-                msg = getString(R.string.dialog_error_msg_num_duplicate);
-                break;
+        // but only if we ask it to
+        if (flag) {
+            for (Map<String, String> datum : data) {
+                String curStopNumber = datum.get(num);
+                if (curStopNumber.equals(stopNumber)) {
+                    msg = getString(R.string.dialog_error_msg_num_duplicate);
+                    break;
+                }
             }
         }
-
         return new String[] {msg, stopName, stopNumber};
     }
 
     public void editItem(View view) {
         // generate edit dialog
         final View dialogView = generateDialogView(getString(R.string.dialog_edit_title), true, view);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog d = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton(R.string.dialog_edit_posbtn, null)
+                .setNeutralButton(R.string.dialog_edit_neubtn, null)
+                .setNegativeButton(R.string.dialog_edit_negbtn, null)
+                .create();
 
         view = (View) view.getParent();
-        TextView tvName = (TextView) view.findViewById(R.id.stopName);
+        // old info
         TextView tvStop = (TextView) view.findViewById(R.id.stopNumber);
         final String stopNumber = tvStop.getText().toString();
 
-        builder.setPositiveButton( getString(R.string.dialog_edit_posbtn), new DialogInterface.OnClickListener() {
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button btnNeg = d.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-                String[] info = checkInput(dialogView);
-                String msg = info[0];
+                btnPos.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // get new info...
+                        EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
+                        EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
+                        String newStopName = etStopNameNew.getText().toString();
+                        String newStopNumber = etStopNumberNew.getText().toString();
 
-                if (msg.equals("")) {
-                    for (Map<String, String> datum : data) {
-                        if (datum.get(num).equals(stopNumber)) {
-                            EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
-                            EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-                            String newStopName = etStopNameNew.getText().toString();
-                            String newStopNumber = etStopNumberNew.getText().toString();
-                            datum.put(name, newStopName);
-                            datum.put(num, newStopNumber);
-                            adapter.notifyDataSetChanged();
-                            break;
+                        String[] info = checkInput(dialogView, false);
+                        String msg = info[0];
+
+                        if (msg.equals("")) { // update info
+                            for (Map<String, String> datum : data) {
+                                if (datum.get(num).equals(stopNumber)) {
+                                    datum.put(name, newStopName);
+                                    datum.put(num, newStopNumber);
+                                    adapter.notifyDataSetChanged();
+                                    d.dismiss();
+                                    break;
+                                }
+                            }
+                        } else {
+                            TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
+                            tvErrorMsg.setText(msg);
+                            tvErrorMsg.setVisibility(View.VISIBLE);
                         }
                     }
-                } else {
-                    AlertDialog.Builder builderError = generateErrorDialog(msg);
-                    builderError.show();
-                    return;
-                }
-            }
-        });
+                });
 
-        builder.setNeutralButton( getString(R.string.dialog_edit_neubtn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // do nothing
-            }
-        });
-
-        builder.setNegativeButton( getString(R.string.dialog_edit_negbtn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                for (Map<String, String> datum : data) {
-                    if (datum.get(num).equals(stopNumber)) {
-                        data.remove(datum);
-                        adapter.notifyDataSetChanged();
-                        break;
+                btnNeg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        for (Map<String, String> datum : data) {
+                            if (datum.get(num).equals(stopNumber)) {
+                                data.remove(datum);
+                                adapter.notifyDataSetChanged();
+                                d.dismiss();
+                                break;
+                            }
+                        }
                     }
-                }
+                });
             }
         });
-        builder.setView(dialogView);
-        builder.show();
+        d.show();
     }
 
     public void addItem(final View view) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View dialogView = generateDialogView( getString(R.string.dialog_add_title), false, view);
+        final AlertDialog d = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton(R.string.dialog_add_posbtn, null)
+                .setNegativeButton(R.string.dialog_add_negbtn, null)
+                .create();
 
-        builder.setPositiveButton(getString(R.string.dialog_add_posbtn), new DialogInterface.OnClickListener() {
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String[] info = checkInput(dialogView);
-                String msg = info[0];
-                String stopName = info[1];
-                String stopNumber = info[2];
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
 
-                if (msg.equals("")) {
-                    Map<String,String> datum = new HashMap<String, String>(2);
-                    datum.put(name, stopName);
-                    datum.put(num, stopNumber);
-                    data.add(datum);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    AlertDialog.Builder builderError = generateErrorDialog(msg);
-                    builderError.show();
-                    return;
-                }
+                btnPos.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String[] info = checkInput(dialogView, true);
+                        String msg = info[0];
+                        String stopName = info[1];
+                        String stopNumber = info[2];
+
+                        if (msg.equals("")) { // add info
+                            Map<String,String> datum = new HashMap<String, String>(2);
+                            datum.put(name, stopName);
+                            datum.put(num, stopNumber);
+                            data.add(datum);
+                            adapter.notifyDataSetChanged();
+                            d.dismiss();
+                        } else {
+                            TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
+                            tvErrorMsg.setText(msg);
+                            tvErrorMsg.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
             }
         });
-        builder.setNegativeButton(getString(R.string.dialog_add_negbtn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // narp
-            }
-        });
-        builder.setView(dialogView);
-        builder.show();
+        d.show();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -273,6 +281,5 @@ public class MyActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }

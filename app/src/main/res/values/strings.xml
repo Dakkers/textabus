@@ -15,11 +15,11 @@
     <string name="dialog_add_negbtn">Never Mind</string>
 
     <string name="dialog_error_title">Invalid input!</string>
-    <string name="dialog_error_msg_name_duplicate">That stop name is already in use.</string>
-    <string name="dialog_error_msg_num_duplicate">That stop number is already in use.</string>
-    <string name="dialog_error_msg_name_toolong">The stop name must be less than 49 characters.</string>
-    <string name="dialog_error_msg_num_toolong">The stop number must be less than 9 characters.</string>
-    <string name="dialog_error_msg_num_invalidchars">The stop number can only contain numbers and spaces.</string>
+    <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
+    <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
+    <string name="dialog_error_msg_name_toolong">Invalid input! The stop name must be less than 49 characters.</string>
+    <string name="dialog_error_msg_num_toolong">Invalid input! The stop number must be less than 9 characters.</string>
+    <string name="dialog_error_msg_num_invalidchars">Invalid input! The stop number can only contain numbers and spaces.</string>
     <string name="dialog_error_posbtn">Sorry!</string>
 
 </resources>
