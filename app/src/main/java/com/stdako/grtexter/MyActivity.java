@@ -42,10 +42,7 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        // get list object from the xml
         listView = (ListView) findViewById(R.id.list);
-
-        // adding click event listener to each item
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -102,19 +99,6 @@ public class MyActivity extends Activity {
             etNumber.setText(stopNumber);
         }
         return dialogView;
-    }
-
-    public AlertDialog.Builder generateErrorDialog (String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.dialog_error_title);
-        builder.setMessage(msg);
-        builder.setPositiveButton(R.string.dialog_error_posbtn, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // do nothing
-            }
-        });
-        return builder;
     }
 
     public String[] checkInput(View dialogView, Boolean flag) {
