@@ -3,7 +3,9 @@ package com.stdako.grtexter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,21 +28,59 @@ import java.util.regex.Pattern;
 public class MyActivity extends Activity {
 
     ListView listView;
-
     SimpleAdapter adapter;
-    List<Map<String, String>> data;
+    List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
     final public static String name = "name";
     final public static String num = "num";
-    final public static String pattern = "[^0-9\\s]";
-    final public static Pattern r = Pattern.compile(pattern);
-    final SmsManager smsManager = SmsManager.getDefault();
+    final public static String dataSaved = "hasDataBeenSaved?";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // don't touch pls
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        final SmsManager smsManager = SmsManager.getDefault();
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),
+                this.MODE_PRIVATE);
+        Map<String,?> rawData = sharedPref.getAll();
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.remove("WILL THIS BE A NPE? LELEL");
+
+        // user hasn't done anything; here's some default data
+        if (rawData.get(dataSaved) == null) {
+            // add temp data to listview
+            Map<String, String> datum1 = new HashMap<String, String>(2);
+            datum1.put(name, getString(R.string.data_default_name1));
+            datum1.put(num, getString(R.string.data_default_num1));
+            data.add(datum1);
+            Map<String, String> datum2 = new HashMap<String, String>(2);
+            datum2.put(name, getString(R.string.data_default_name2));
+            datum2.put(num, getString(R.string.data_default_num2));
+            data.add(datum2);
+
+            // remove/add temp data to storage
+            editor.remove(getString(R.string.data_default_name1));
+            editor.remove(getString(R.string.data_default_name2));
+            editor.putString(getString(R.string.data_default_name1), getString(R.string.data_default_num1));
+            editor.putString(getString(R.string.data_default_name2), getString(R.string.data_default_num2));
+            editor.apply();
+        } else {
+            for (String key : rawData.keySet()) {
+                if (!key.equals(dataSaved)) {
+                    System.out.println(key);
+                    System.out.println(rawData.get(key));
+                    Map<String,String> datum = new HashMap<String, String>(2);
+                    datum.put(name, key);
+                    datum.put(num, (String) rawData.get(key));
+                    data.add(datum);
+                }
+            }
+        }
 
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,17 +91,6 @@ public class MyActivity extends Activity {
                 smsManager.sendTextMessage("57555", null, stopNumber, null, null);
             }
         });
-
-        // temp data
-        data = new ArrayList<Map<String, String>>();
-        Map<String, String> datum1 = new HashMap<String, String>(2);
-        datum1.put(name, "Home to UW");
-        datum1.put(num, "1161");
-        data.add(datum1);
-        Map<String, String> datum2 = new HashMap<String, String>(2);
-        datum2.put(name, "UW Engineering to Home");
-        datum2.put(num, "1124 9");
-        data.add(datum2);
 
         // define a new adapter
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
@@ -112,19 +141,22 @@ public class MyActivity extends Activity {
         return other message otherwise.
          */
 
+        final String pattern = "[^0-9\\s]";
+        final Pattern r = Pattern.compile(pattern);
         EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
         EditText etStop = (EditText) dialogView.findViewById(R.id.itemStopNumber);
         String stopName = etName.getText().toString();
         String stopNumber = etStop.getText().toString();
         String msg = "";
 
-        if (stopNumber.length() > 8) {
+        if (stopNumber.length() > 8)
             msg = getString(R.string.dialog_error_msg_num_toolong);
-        } else if (stopName.length() > 48) {
+        else if (stopName.length() > 48)
             msg = getString(R.string.dialog_error_msg_name_toolong);
-        } else if (r.matcher(stopNumber).find()) {
+        else if (r.matcher(stopNumber).find())
             msg = getString(R.string.dialog_error_msg_num_invalidchars);
-        }
+        else if (stopName.equals(dataSaved))
+            msg = getString(R.string.dialog_error_msg_name_nope);
 
         // check to see if stop number is being used already
         // but only if we ask it to
@@ -151,8 +183,9 @@ public class MyActivity extends Activity {
                 .create();
 
         view = (View) view.getParent();
-        // old info
+        TextView tvName = (TextView) view.findViewById(R.id.stopName);
         TextView tvStop = (TextView) view.findViewById(R.id.stopNumber);
+        final String stopName = tvName.getText().toString();
         final String stopNumber = tvStop.getText().toString();
 
         d.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -176,9 +209,22 @@ public class MyActivity extends Activity {
                         if (msg.equals("")) { // update info
                             for (Map<String, String> datum : data) {
                                 if (datum.get(num).equals(stopNumber)) {
+                                    // change old key-val pair in memory
                                     datum.put(name, newStopName);
                                     datum.put(num, newStopNumber);
                                     adapter.notifyDataSetChanged();
+
+                                    // remove old key-val pair from storage, add new
+                                    SharedPreferences sharedPref = view.getContext().getSharedPreferences(
+                                            getString(R.string.preference_file_key),
+                                            view.getContext().MODE_PRIVATE
+                                    );
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.remove(stopName);
+                                    editor.putString(newStopName, newStopNumber);
+                                    if (sharedPref.getAll().get(dataSaved) == null)
+                                        editor.putString(dataSaved, "true");
+                                    editor.apply();
                                     d.dismiss();
                                     break;
                                 }
@@ -196,8 +242,20 @@ public class MyActivity extends Activity {
                     public void onClick(View view) {
                         for (Map<String, String> datum : data) {
                             if (datum.get(num).equals(stopNumber)) {
+                                // remove key-value pair from memory
                                 data.remove(datum);
                                 adapter.notifyDataSetChanged();
+
+                                // remove from storage
+                                SharedPreferences sharedPref = view.getContext().getSharedPreferences(
+                                        getString(R.string.preference_file_key),
+                                        view.getContext().MODE_PRIVATE
+                                );
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.remove(stopName);
+                                if (sharedPref.getAll().get(dataSaved).equals("false"))
+                                    editor.putString(dataSaved, "true");
+                                editor.apply();
                                 d.dismiss();
                                 break;
                             }
@@ -230,12 +288,24 @@ public class MyActivity extends Activity {
                         String stopName = info[1];
                         String stopNumber = info[2];
 
-                        if (msg.equals("")) { // add info
+                        if (msg.equals("")) {
+                            // add to memory (list view)
                             Map<String,String> datum = new HashMap<String, String>(2);
                             datum.put(name, stopName);
                             datum.put(num, stopNumber);
                             data.add(datum);
                             adapter.notifyDataSetChanged();
+
+                            // add to storage
+                            SharedPreferences sharedPref = view.getContext().getSharedPreferences(
+                                    getString(R.string.preference_file_key),
+                                    view.getContext().MODE_PRIVATE
+                            );
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(stopName, stopNumber);
+                            if (sharedPref.getAll().get(dataSaved) == null)
+                                editor.putString(dataSaved, "true");
+                            editor.apply();
                             d.dismiss();
                         } else {
                             TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
@@ -263,7 +333,6 @@ public class MyActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             return true;
         }
         return super.onOptionsItemSelected(item);

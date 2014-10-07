@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_texting_number_default"
+        android:key="pref_texting_number"
+        android:title="Phone number to text"
+    />
+
+</PreferenceScreen>
