@@ -19,9 +19,12 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.regex.Pattern;
 
 
@@ -49,8 +52,6 @@ public class MyActivity extends Activity {
         Map<String,?> rawData = sharedPref.getAll();
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        editor.remove("WILL THIS BE A NPE? LELEL");
-
         // user hasn't done anything; here's some default data
         if (rawData.get(dataSaved) == null) {
             // add temp data to listview
@@ -70,10 +71,10 @@ public class MyActivity extends Activity {
             editor.putString(getString(R.string.data_default_name2), getString(R.string.data_default_num2));
             editor.apply();
         } else {
-            for (String key : rawData.keySet()) {
+            List<String> keys = new ArrayList<String>(rawData.keySet());
+            Collections.sort(keys);
+            for (String key : keys) {
                 if (!key.equals(dataSaved)) {
-                    System.out.println(key);
-                    System.out.println(rawData.get(key));
                     Map<String,String> datum = new HashMap<String, String>(2);
                     datum.put(name, key);
                     datum.put(num, (String) rawData.get(key));
@@ -88,15 +89,14 @@ public class MyActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
-                smsManager.sendTextMessage("57555", null, stopNumber, null, null);
+                smsManager.sendTextMessage(getString(R.string.data_default_phone_number),
+                        null, stopNumber, null, null);
             }
         });
 
-        // define a new adapter
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
 
-        // assign adapter to listView
         listView.setAdapter(adapter);
     }
 
