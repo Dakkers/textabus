@@ -3,13 +3,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/addItemLayout"
+    android:id="@+id/settingsDialogLayout"
     android:background="@color/background_color">
 
     <TextView
-        android:id="@+id/dialogTitle"
-
-        android:text="Add Bus Stop"
+        android:text="Settings"
         android:textSize="28dp"
         android:textColor="#FFFFFF"
         android:gravity="center"
@@ -17,12 +15,14 @@
 
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/itemStopName"
 
-        android:hint="UW/Seagram to Burger King"
+        android:hint="57555"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,16 +30,6 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"/>
-    <EditText
-        android:id="@+id/itemStopNumber"
-
-        android:hint="2781"
-
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/errorMessage"
 

@@ -101,7 +101,7 @@ public class MyActivity extends Activity {
         listView.setAdapter(adapter);
     }
 
-    public View generateDialogView(String title, Boolean flag, View view) {
+    public View generateDialogView(String title, Boolean editingStop, View view) {
         /*
         title: dialog title
         flag: true for editing, false for adding (changes EditText hints if true)
@@ -118,7 +118,7 @@ public class MyActivity extends Activity {
         // parent of the image is the list item
         view = (View) view.getParent();
 
-        if (flag) {
+        if (editingStop) {
             TextView tvName = (TextView) view.findViewById(R.id.stopName);
             TextView tvNumber = (TextView) view.findViewById(R.id.stopNumber);
             EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
@@ -131,7 +131,7 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
-    public String[] checkInput(View dialogView, Boolean flag) {
+    public String[] checkInput(View dialogView, Boolean checkStopNumbers) {
         /*
         check inputs to see if they're legit.
           - stop name length is < 49 chars
@@ -161,7 +161,7 @@ public class MyActivity extends Activity {
 
         // check to see if stop number is being used already
         // but only if we ask it to
-        if (flag) {
+        if (checkStopNumbers) {
             for (Map<String, String> datum : data) {
                 String curStopNumber = datum.get(num);
                 if (curStopNumber.equals(stopNumber)) {
@@ -193,7 +193,12 @@ public class MyActivity extends Activity {
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button btnNeu = d.getButton(AlertDialog.BUTTON_NEUTRAL);
                 Button btnNeg = d.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                btnPos.setBackgroundColor(getResources().getColor(R.color.background_color));
+                btnNeu.setBackgroundColor(getResources().getColor(R.color.background_color));
+                btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
 
                 btnPos.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -280,6 +285,10 @@ public class MyActivity extends Activity {
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button btnNeg = d.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                btnPos.setBackgroundColor(getResources().getColor(R.color.background_color));
+                btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
 
                 btnPos.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -320,12 +329,12 @@ public class MyActivity extends Activity {
         d.show();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.my, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.my, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -334,20 +343,38 @@ public class MyActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.main_activity, new PrefsFragment()).commit();
+            LayoutInflater inflater = getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.settings_dialog_layout, null);
+
+            final AlertDialog d = new AlertDialog.Builder(this)
+                    .setView(dialogView)
+                    .setPositiveButton(R.string.dialog_settings_posbtn, null)
+                    .setNegativeButton(R.string.dialog_settings_negbtn, null)
+                    .create();
+
+            d.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                    Button btnNeg = d.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                    btnPos.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
+
+                    btnPos.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String[] info = checkInput(dialogView, true);
+                        }
+                    });
+                }
+            });
+
+            d.show();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class PrefsFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            addPreferencesFromResource(R.xml.preferences);
-        }
     }
 
 }

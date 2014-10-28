@@ -13,6 +13,8 @@
     <string name="dialog_add_title">Add Bus Stop</string>
     <string name="dialog_add_posbtn">Add</string>
     <string name="dialog_add_negbtn">Never Mind</string>
+    <string name="dialog_settings_posbtn">Save</string>
+    <string name="dialog_settings_negbtn">Never Mind</string>
     <string name="dialog_error_title">Invalid input!</string>
     <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
     <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
