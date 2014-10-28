@@ -86,19 +86,24 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView tv = (TextView) view.findViewById(R.id.stopNumber);
-                String stopNumber = (String) tv.getText();
-                smsManager.sendTextMessage((String) rawData.get(getString(R.string.pref_sms_key)), null, stopNumber, null, null);
-            }
-        });
+        listView.setOnItemClickListener(LOLWTF((String) rawData.get(getString(R.string.pref_sms_key))));
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
 
         listView.setAdapter(adapter);
+    }
+
+    public AdapterView.OnItemClickListener LOLWTF(final String smsNumber) {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView tv = (TextView) view.findViewById(R.id.stopNumber);
+                String stopNumber = (String) tv.getText();
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
+            }
+        };
     }
 
     public View generateDialogView(String title, Boolean editingStop, View view) {
@@ -384,14 +389,7 @@ public class MyActivity extends Activity {
 
                                 final SmsManager smsManager = SmsManager.getDefault();
                                 listView = (ListView) findViewById(R.id.list);
-                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        TextView tv = (TextView) view.findViewById(R.id.stopNumber);
-                                        String stopNumber = (String) tv.getText();
-                                        smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
-                                    }
-                                });
+                                listView.setOnItemClickListener(LOLWTF(smsNumber));
                                 d.dismiss();
                             } else {
                                 TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
