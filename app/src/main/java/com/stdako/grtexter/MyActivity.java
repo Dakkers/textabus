@@ -105,6 +105,14 @@ public class MyActivity extends Activity {
         };
     }
 
+    public String getStringFromEditText(View dialogView, int Id) {
+        return ((EditText) dialogView.findViewById(Id)).getText().toString();
+    }
+
+    public String getStringFromTextView(View view, int Id) {
+        return ((TextView) view.findViewById(Id)).getText().toString();
+    }
+
     public View generateDialogView(String title, Boolean editingStop, View view) {
         /*
         title: dialog title
@@ -123,12 +131,10 @@ public class MyActivity extends Activity {
         view = (View) view.getParent();
 
         if (editingStop) {
-            TextView tvName = (TextView) view.findViewById(R.id.stopName);
-            TextView tvNumber = (TextView) view.findViewById(R.id.stopNumber);
             EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
             EditText etNumber = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-            String stopName = tvName.getText().toString();
-            String stopNumber = tvNumber.getText().toString();
+            String stopName = getStringFromTextView(view, R.id.stopName);
+            String stopNumber = getStringFromTextView(view, R.id.stopNumber);
             etName.setText(stopName);
             etNumber.setText(stopNumber);
         }
@@ -148,10 +154,8 @@ public class MyActivity extends Activity {
 
         final String pattern = "[^0-9\\s]";
         final Pattern r = Pattern.compile(pattern);
-        EditText etName = (EditText) dialogView.findViewById(R.id.itemStopName);
-        EditText etStop = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-        String stopName = etName.getText().toString();
-        String stopNumber = etStop.getText().toString();
+        String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
+        String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
         String msg = "";
 
         if (stopNumber.length() > 8)
@@ -188,10 +192,8 @@ public class MyActivity extends Activity {
                 .create();
 
         view = (View) view.getParent();
-        TextView tvName = (TextView) view.findViewById(R.id.stopName);
-        TextView tvStop = (TextView) view.findViewById(R.id.stopNumber);
-        final String stopName = tvName.getText().toString();
-        final String stopNumber = tvStop.getText().toString();
+        final String stopName = getStringFromTextView(view, R.id.stopName);
+        final String stopNumber = getStringFromTextView(view, R.id.stopNumber);
 
         d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -208,11 +210,8 @@ public class MyActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         // get new info...
-                        EditText etStopNameNew = (EditText) dialogView.findViewById(R.id.itemStopName);
-                        EditText etStopNumberNew = (EditText) dialogView.findViewById(R.id.itemStopNumber);
-                        String newStopName = etStopNameNew.getText().toString();
-                        String newStopNumber = etStopNumberNew.getText().toString();
-
+                        String newStopName = getStringFromEditText(dialogView, R.id.itemStopName);
+                        String newStopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
                         String[] info = checkInput(dialogView, false);
                         String msg = info[0];
 
@@ -370,7 +369,7 @@ public class MyActivity extends Activity {
                         public void onClick(View view) {
                             String pattern = "^[0-9+]+$";
                             Pattern r = Pattern.compile(pattern);
-                            final String smsNumber = (String) ((EditText) dialogView.findViewById(R.id.smsNumber)).getText().toString();
+                            final String smsNumber = getStringFromEditText(dialogView, R.id.smsNumber);
 
                             if (r.matcher(smsNumber).find()) {
                                 // change the listener on each list item so it sends texts to the new number
@@ -395,12 +394,9 @@ public class MyActivity extends Activity {
                     });
                 }
             });
-
             d.show();
-
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
