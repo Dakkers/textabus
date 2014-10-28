@@ -34,6 +34,7 @@ public class MyActivity extends Activity {
     ListView listView;
     SimpleAdapter adapter;
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+    String SMSNumber;
 
     final public static String name = "name";
     final public static String num = "num";
@@ -50,7 +51,7 @@ public class MyActivity extends Activity {
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),
                 this.MODE_PRIVATE);
-        Map<String,?> rawData = sharedPref.getAll();
+        final Map<String,?> rawData = sharedPref.getAll();
         SharedPreferences.Editor editor = sharedPref.edit();
 
         // user hasn't done anything; here's some default data
@@ -75,7 +76,7 @@ public class MyActivity extends Activity {
             List<String> keys = new ArrayList<String>(rawData.keySet());
             Collections.sort(keys);
             for (String key : keys) {
-                if (!key.equals(dataSaved)) {
+                if (!key.equals(dataSaved) && !key.equals(getString(R.string.pref_sms_key))) {
                     Map<String,String> datum = new HashMap<String, String>(2);
                     datum.put(name, key);
                     datum.put(num, (String) rawData.get(key));
@@ -90,8 +91,7 @@ public class MyActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
-                smsManager.sendTextMessage(getString(R.string.data_default_phone_number),
-                        null, stopNumber, null, null);
+                smsManager.sendTextMessage((String) rawData.get(getString(R.string.pref_sms_key)), null, stopNumber, null, null);
             }
         });
 
@@ -364,7 +364,40 @@ public class MyActivity extends Activity {
                     btnPos.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            String[] info = checkInput(dialogView, true);
+                            String pattern = "^[0-9+]+$";
+                            Pattern r = Pattern.compile(pattern);
+                            EditText etSmsNumber = (EditText) dialogView.findViewById(R.id.smsNumber);
+                            final String smsNumber = etSmsNumber.getText().toString();
+
+                            if (r.matcher(smsNumber).find()) {
+                                // update SMS Number held in memory
+                                SMSNumber = smsNumber;
+
+                                // add to storage
+                                SharedPreferences sharedPref = view.getContext().getSharedPreferences(
+                                        getString(R.string.preference_file_key),
+                                        view.getContext().MODE_PRIVATE
+                                );
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString(getString(R.string.pref_sms_key), smsNumber);
+                                editor.apply();
+
+                                final SmsManager smsManager = SmsManager.getDefault();
+                                listView = (ListView) findViewById(R.id.list);
+                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                        TextView tv = (TextView) view.findViewById(R.id.stopNumber);
+                                        String stopNumber = (String) tv.getText();
+                                        smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
+                                    }
+                                });
+                                d.dismiss();
+                            } else {
+                                TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
+                                tvErrorMsg.setText(R.string.dialog_error_msg_settings_invalid);
+                                tvErrorMsg.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
                 }

@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
-        android:id="@+id/itemStopName"
+        android:id="@+id/smsNumber"
 
         android:hint="57555"
 
