@@ -34,11 +34,11 @@ public class MyActivity extends Activity {
     ListView listView;
     SimpleAdapter adapter;
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-    String SMSNumber;
 
     final public static String name = "name";
     final public static String num = "num";
     final public static String dataSaved = "hasDataBeenSaved?";
+    final SmsManager smsManager = SmsManager.getDefault();
 
 
     @Override
@@ -46,7 +46,6 @@ public class MyActivity extends Activity {
         // don't touch pls
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        final SmsManager smsManager = SmsManager.getDefault();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),
@@ -86,7 +85,7 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(LOLWTF((String) rawData.get(getString(R.string.pref_sms_key))));
+        listView.setOnItemClickListener(setListItemClickListener((String) rawData.get(getString(R.string.pref_sms_key))));
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
@@ -94,13 +93,13 @@ public class MyActivity extends Activity {
         listView.setAdapter(adapter);
     }
 
-    public AdapterView.OnItemClickListener LOLWTF(final String smsNumber) {
+    // I'm sorry.
+    public AdapterView.OnItemClickListener setListItemClickListener(final String smsNumber) {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
-                SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
             }
         };
@@ -371,12 +370,12 @@ public class MyActivity extends Activity {
                         public void onClick(View view) {
                             String pattern = "^[0-9+]+$";
                             Pattern r = Pattern.compile(pattern);
-                            EditText etSmsNumber = (EditText) dialogView.findViewById(R.id.smsNumber);
-                            final String smsNumber = etSmsNumber.getText().toString();
+                            final String smsNumber = (String) ((EditText) dialogView.findViewById(R.id.smsNumber)).getText().toString();
 
                             if (r.matcher(smsNumber).find()) {
-                                // update SMS Number held in memory
-                                SMSNumber = smsNumber;
+                                // change the listener on each list item so it sends texts to the new number
+                                listView = (ListView) findViewById(R.id.list);
+                                listView.setOnItemClickListener(setListItemClickListener(smsNumber));
 
                                 // add to storage
                                 SharedPreferences sharedPref = view.getContext().getSharedPreferences(
@@ -386,10 +385,6 @@ public class MyActivity extends Activity {
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString(getString(R.string.pref_sms_key), smsNumber);
                                 editor.apply();
-
-                                final SmsManager smsManager = SmsManager.getDefault();
-                                listView = (ListView) findViewById(R.id.list);
-                                listView.setOnItemClickListener(LOLWTF(smsNumber));
                                 d.dismiss();
                             } else {
                                 TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);

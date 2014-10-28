@@ -5,14 +5,15 @@ my first (and therefore probably awfully written) Android app. it allows you to 
 
 ## Features
 - adding / editing / removing stops
-- 
+- specifying what number to text
 
 ## TODO
 - ~~add in settings page so users can change the phone number that is texted (so people from different cities can use it)~~
 - update the design, it's pretty bland.
 - update button sizes. they're a bit too small, it seems.
 - ~~sort the data by name~~
-- code cleanup?
+- CODE CLEANUP PLS
+- change name of app
 
 ## License
 how does this work? I don't know. please don't duplicate this and then sell it or claim it as your own. feel free to copy and paste the code that you need, though. hopefully my code isn't too horrible for people looking for examples.
