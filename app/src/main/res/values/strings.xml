@@ -26,5 +26,6 @@
     <string name="data_default_name2">UW Engineering to Home</string>
     <string name="data_default_num2">1124 9</string>
     <string name="data_default_phone_number">57555</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

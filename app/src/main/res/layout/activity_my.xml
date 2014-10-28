@@ -14,7 +14,8 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"></ListView>
+        android:layout_weight="1"
+        android:scrollbarStyle="outsideInset"></ListView>
     <ImageView
         android:id="@+id/iconAdd"
         android:src="@android:drawable/ic_menu_add"
