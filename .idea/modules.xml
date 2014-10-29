@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GRTexter.iml" filepath="$PROJECT_DIR$/GRTexter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TextABus.iml" filepath="$PROJECT_DIR$/TextABus.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

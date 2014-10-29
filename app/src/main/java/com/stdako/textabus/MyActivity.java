@@ -1,13 +1,10 @@
-package com.stdako.grtexter;
+package com.stdako.textabus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
@@ -34,10 +31,12 @@ public class MyActivity extends Activity {
     ListView listView;
     SimpleAdapter adapter;
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+    String SMSNumber;
 
     final public static String name = "name";
     final public static String num = "num";
-    final public static String dataSaved = "hasDataBeenSaved?";
+    final public static String keyDataSaved = "textabus.DATA_SAVED_KEY";
+    final public static String keySMSNumber = "textabus.SMS_NUMBER_KEY";
     final SmsManager smsManager = SmsManager.getDefault();
 
 
@@ -54,7 +53,7 @@ public class MyActivity extends Activity {
         SharedPreferences.Editor editor = sharedPref.edit();
 
         // user hasn't done anything; here's some default data
-        if (rawData.get(dataSaved) == null) {
+        if (rawData.get(keyDataSaved) == null) {
             // add temp data to listview
             Map<String, String> datum1 = new HashMap<String, String>(2);
             datum1.put(name, getString(R.string.data_default_name1));
@@ -75,7 +74,7 @@ public class MyActivity extends Activity {
             List<String> keys = new ArrayList<String>(rawData.keySet());
             Collections.sort(keys);
             for (String key : keys) {
-                if (!key.equals(dataSaved) && !key.equals(getString(R.string.pref_sms_key))) {
+                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber)) {
                     Map<String,String> datum = new HashMap<String, String>(2);
                     datum.put(name, key);
                     datum.put(num, (String) rawData.get(key));
@@ -85,7 +84,8 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(setListItemClickListener((String) rawData.get(getString(R.string.pref_sms_key))));
+        listView.setOnItemClickListener(setListItemClickListener((String) rawData.get(getString(R.string.textabus_sms_key))));
+        SMSNumber = (String) rawData.get(getString(R.string.textabus_sms_key));
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
@@ -164,7 +164,7 @@ public class MyActivity extends Activity {
             msg = getString(R.string.dialog_error_msg_name_toolong);
         else if (r.matcher(stopNumber).find())
             msg = getString(R.string.dialog_error_msg_num_invalidchars);
-        else if (stopName.equals(dataSaved))
+        else if (stopName.equals(keyDataSaved))
             msg = getString(R.string.dialog_error_msg_name_nope);
 
         // check to see if stop number is being used already
@@ -215,7 +215,8 @@ public class MyActivity extends Activity {
                         String[] info = checkInput(dialogView, false);
                         String msg = info[0];
 
-                        if (msg.equals("")) { // update info
+                        if (msg.equals("")) {
+                            // update info
                             for (Map<String, String> datum : data) {
                                 if (datum.get(num).equals(stopNumber)) {
                                     // change old key-val pair in memory
@@ -231,8 +232,8 @@ public class MyActivity extends Activity {
                                     SharedPreferences.Editor editor = sharedPref.edit();
                                     editor.remove(stopName);
                                     editor.putString(newStopName, newStopNumber);
-                                    if (sharedPref.getAll().get(dataSaved) == null)
-                                        editor.putString(dataSaved, "true");
+                                    if (sharedPref.getAll().get(keyDataSaved) == null)
+                                        editor.putString(keyDataSaved, "true");
                                     editor.apply();
                                     d.dismiss();
                                     break;
@@ -262,8 +263,8 @@ public class MyActivity extends Activity {
                                 );
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.remove(stopName);
-                                if (sharedPref.getAll().get(dataSaved).equals("false"))
-                                    editor.putString(dataSaved, "true");
+                                if (sharedPref.getAll().get(keyDataSaved) == null)
+                                    editor.putString(keyDataSaved, "true");
                                 editor.apply();
                                 d.dismiss();
                                 break;
@@ -277,7 +278,7 @@ public class MyActivity extends Activity {
     }
 
     public void addItem(final View view) {
-        final View dialogView = generateDialogView( getString(R.string.dialog_add_title), false, view);
+        final View dialogView = generateDialogView(getString(R.string.dialog_add_title), false, view);
         final AlertDialog d = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton(R.string.dialog_add_posbtn, null)
@@ -316,8 +317,8 @@ public class MyActivity extends Activity {
                             );
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(stopName, stopNumber);
-                            if (sharedPref.getAll().get(dataSaved) == null)
-                                editor.putString(dataSaved, "true");
+                            if (sharedPref.getAll().get(keyDataSaved) == null)
+                                editor.putString(keyDataSaved, "true");
                             editor.apply();
                             d.dismiss();
                         } else {
@@ -341,10 +342,8 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         if (id == R.id.action_settings) {
             LayoutInflater inflater = getLayoutInflater();
             final View dialogView = inflater.inflate(R.layout.settings_dialog_layout, null);
@@ -363,6 +362,9 @@ public class MyActivity extends Activity {
 
                     btnPos.setBackgroundColor(getResources().getColor(R.color.background_color));
                     btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    EditText etSmsNumber = (EditText) dialogView.findViewById(R.id.smsNumber);
+                    etSmsNumber.setText(SMSNumber);
+                    etSmsNumber.setSelection(SMSNumber.length());
 
                     btnPos.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -372,6 +374,9 @@ public class MyActivity extends Activity {
                             final String smsNumber = getStringFromEditText(dialogView, R.id.smsNumber);
 
                             if (r.matcher(smsNumber).find()) {
+                                // change number in memory
+                                SMSNumber = smsNumber;
+
                                 // change the listener on each list item so it sends texts to the new number
                                 listView = (ListView) findViewById(R.id.list);
                                 listView.setOnItemClickListener(setListItemClickListener(smsNumber));
@@ -382,7 +387,7 @@ public class MyActivity extends Activity {
                                         view.getContext().MODE_PRIVATE
                                 );
                                 SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString(getString(R.string.pref_sms_key), smsNumber);
+                                editor.putString(getString(R.string.textabus_sms_key), smsNumber);
                                 editor.apply();
                                 d.dismiss();
                             } else {

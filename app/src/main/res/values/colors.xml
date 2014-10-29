@@ -3,5 +3,6 @@
     <color name="transparent">#00000000</color>
     <color name="header_color">#22313F</color>
     <color name="background_color">#E4F1FE</color>
+    <color name="error_msg_color">#FF0000</color>
 
 </resources>
