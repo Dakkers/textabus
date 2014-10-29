@@ -84,7 +84,9 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(setListItemClickListener((String) rawData.get(getString(R.string.textabus_sms_key))));
+        listView.setOnItemClickListener(
+                setListItemClickListener((String) rawData.get(getString(R.string.textabus_sms_key)))
+        );
         SMSNumber = (String) rawData.get(getString(R.string.textabus_sms_key));
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
@@ -122,7 +124,7 @@ public class MyActivity extends Activity {
 
         // black magic
         LayoutInflater inflater = getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_layout, null);
+        final View dialogView = inflater.inflate(R.layout.dialog_addedit_layout, null);
 
         TextView dialogTitle = (TextView) dialogView.findViewById(R.id.dialogTitle);
         dialogTitle.setText(title);
@@ -346,7 +348,7 @@ public class MyActivity extends Activity {
 
         if (id == R.id.action_settings) {
             LayoutInflater inflater = getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.settings_dialog_layout, null);
+            final View dialogView = inflater.inflate(R.layout.dialog_settings_layout, null);
 
             final AlertDialog d = new AlertDialog.Builder(this)
                     .setView(dialogView)
