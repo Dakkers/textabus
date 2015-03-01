@@ -49,7 +49,7 @@ public class MyActivity extends Activity {
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),
                 this.MODE_PRIVATE);
-        final Map<String,?> rawData = sharedPref.getAll();
+        Map<String,?> rawData = sharedPref.getAll();
         SharedPreferences.Editor editor = sharedPref.edit();
 
         // user hasn't done anything; here's some default data
@@ -64,12 +64,15 @@ public class MyActivity extends Activity {
             datum2.put(num, getString(R.string.data_default_num2));
             data.add(datum2);
 
-            // remove/add temp data to storage
-            editor.remove(getString(R.string.data_default_name1));
-            editor.remove(getString(R.string.data_default_name2));
+            // add default data data to storage
             editor.putString(getString(R.string.data_default_name1), getString(R.string.data_default_num1));
             editor.putString(getString(R.string.data_default_name2), getString(R.string.data_default_num2));
+            editor.putString(keySMSNumber, getString(R.string.data_default_phone_number));
+            editor.putString(keyDataSaved, "true");
             editor.apply();
+
+            // reinitialize rawData, as sharedPreferences were populated with default values.
+            rawData = sharedPref.getAll();
         } else {
             List<String> keys = new ArrayList<String>(rawData.keySet());
             Collections.sort(keys);
@@ -85,9 +88,9 @@ public class MyActivity extends Activity {
 
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(
-                setListItemClickListener((String) rawData.get(getString(R.string.textabus_sms_key)))
+                setListItemClickListener((String) rawData.get(keySMSNumber))
         );
-        SMSNumber = (String) rawData.get(getString(R.string.textabus_sms_key));
+        SMSNumber = (String) rawData.get(keySMSNumber);
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
@@ -234,8 +237,6 @@ public class MyActivity extends Activity {
                                     SharedPreferences.Editor editor = sharedPref.edit();
                                     editor.remove(stopName);
                                     editor.putString(newStopName, newStopNumber);
-                                    if (sharedPref.getAll().get(keyDataSaved) == null)
-                                        editor.putString(keyDataSaved, "true");
                                     editor.apply();
                                     d.dismiss();
                                     break;
@@ -265,8 +266,6 @@ public class MyActivity extends Activity {
                                 );
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.remove(stopName);
-                                if (sharedPref.getAll().get(keyDataSaved) == null)
-                                    editor.putString(keyDataSaved, "true");
                                 editor.apply();
                                 d.dismiss();
                                 break;
@@ -319,8 +318,6 @@ public class MyActivity extends Activity {
                             );
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(stopName, stopNumber);
-                            if (sharedPref.getAll().get(keyDataSaved) == null)
-                                editor.putString(keyDataSaved, "true");
                             editor.apply();
                             d.dismiss();
                         } else {
