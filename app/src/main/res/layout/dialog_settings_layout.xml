@@ -48,7 +48,16 @@
 
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="12sp"
+        android:text="Created by Dakota St. Laurent.\nLogo designed by Jacky Ngai."
+
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
