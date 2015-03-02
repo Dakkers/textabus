@@ -24,8 +24,8 @@
     <string name="dialog_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
     <string name="dialog_error_msg_settings_invalid">Invalid input! The phone number can only contain numbers.</string>
     <string name="dialog_error_posbtn">Sorry!</string>
-    <string name="data_default_name1">DC to Burger King (9)</string>
-    <string name="data_default_num1">1123 9</string>
+    <string name="data_default_name1">DC to Uptown (200)</string>
+    <string name="data_default_num1">1123 200</string>
     <string name="data_default_name2">Laurier to UW</string>
     <string name="data_default_num2">3619</string>
     <string name="data_default_phone_number">57555</string>
