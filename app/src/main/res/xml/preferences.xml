@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:defaultValue="@string/preference_default_sms_number"
-        android:key="@string/textabus_sms_key"
-    />
+
+    <PreferenceCategory
+        android:title="PreferenceCategory A">
+
+        <EditTextPreference
+            android:defaultValue="@string/preference_default_sms_number"
+            android:key="@string/textabus_sms_key"
+            android:summary="This is the phone number that will be texted."
+            android:title="SMS Number"
+        />
+    </PreferenceCategory>
 </PreferenceScreen>
