@@ -1,10 +1,7 @@
 package com.stdako.textabus;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 
 public class SettingsActivity extends Activity {
 
@@ -16,5 +13,4 @@ public class SettingsActivity extends Activity {
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
     }
-
 }

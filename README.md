@@ -15,6 +15,7 @@ my first (and therefore probably awfully written) Android app. it allows you to 
 - ~~CODE CLEANUP PLS~~
 - ~~change name of app~~
 - Pebble integration (that was actually the purpose in the beginning)
+- ~~add About section~~
 
 ## Acknowledgements
 thanks to Pieter Stam (@StamPieter) for being on my ass about finishing this. also thanks to Christian de Angelis (@cdeange) and Shane Creighton-Young (@srcreigh) for helping me out with Android/Java stuff.

@@ -3,11 +3,8 @@ package com.stdako.textabus;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import com.stdako.textabus.R;
 
-import java.util.Map;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -29,6 +26,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // this is the shared preference listener - listens for changes.
         if (key.equals(keySMSNumber)) {
             editor.putString(key, sharedPreferences.getString(key, "57555"));
             editor.apply();
@@ -47,5 +45,4 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
-
 }

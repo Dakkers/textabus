@@ -2,14 +2,22 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="PreferenceCategory A">
+    <EditTextPreference
+        android:defaultValue="@string/preference_default_sms_number"
+        android:key="@string/textabus_sms_key"
+        android:summary="@string/settings_sms_summary"
+        android:title="@string/settings_sms_title"
+    />
 
-        <EditTextPreference
-            android:defaultValue="@string/preference_default_sms_number"
-            android:key="@string/textabus_sms_key"
-            android:summary="This is the phone number that will be texted."
-            android:title="SMS Number"
+    <Preference
+        android:summary="@string/settings_about_summary"
+        android:title="@string/settings_about_title"
+    />
+    <Preference
+        android:title="@string/settings_source_title"
+        android:summary="@string/settings_source_summary">
+        <intent android:action="android.intent.action.VIEW"
+                android:data="@string/settings_source_data"
         />
-    </PreferenceCategory>
+    </Preference>
 </PreferenceScreen>

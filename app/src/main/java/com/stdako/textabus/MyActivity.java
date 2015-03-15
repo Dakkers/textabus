@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
@@ -34,15 +33,13 @@ public class MyActivity extends Activity {
     SimpleAdapter adapter;
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     String SMSNumber;
+    SharedPreferences sharedPref;
 
     final public static String name = "name";
     final public static String num = "num";
     final public static String keyDataSaved = "textabus.DATA_SAVED_KEY";
     final public static String keySMSNumber = "textabus.SMS_NUMBER_KEY";
     final SmsManager smsManager = SmsManager.getDefault();
-
-    SharedPreferences sharedPref;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +88,7 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(
-                //setListItemClickListener((String) rawData.get(keySMSNumber))
-                setListItemClickListener()
-        );
+        listView.setOnItemClickListener(setListItemClickListener());
         SMSNumber = (String) rawData.get(keySMSNumber);
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
@@ -104,18 +98,17 @@ public class MyActivity extends Activity {
     }
 
     // I'm sorry
-    // public AdapterView.OnItemClickListener setListItemClickListener(final String smsNumber) {
     public AdapterView.OnItemClickListener setListItemClickListener() {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
-                String smsNumber  = (String) sharedPref.getAll().get(keySMSNumber);
+                // get SMS number; if key lookup fails, return "NULL"
+                String smsNumber  = sharedPref.getString(keySMSNumber, "NULL");
 
-                System.out.println(smsNumber);
-
-                smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
+                if (!(smsNumber.equals("NULL")))
+                    smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
             }
         };
     }
@@ -131,7 +124,7 @@ public class MyActivity extends Activity {
     public View generateDialogView(String title, Boolean editingStop, View view) {
         /*
         title: dialog title
-        flag: true for editing, false for adding (changes EditText hints if true)
+        editingStop: true for editing, false for adding (changes EditText hints if true)
         view: parent view (add or edit image)
          */
 
@@ -158,10 +151,12 @@ public class MyActivity extends Activity {
 
     public String[] checkInput(View dialogView, Boolean checkStopNumbers) {
         /*
-        check inputs to see if they're legit.
-          - stop name length is < 49 chars
+        check inputs to see if they're legit. following conditions must hold:
           - stop number length is < 9 chars
-          - stop number has non-numeric/whitespace chars
+          - stop number is not empty
+          - stop name length is < 49 chars
+          - stop number has only numeric/whitespace chars
+          - stop number is not only whitespace
           - stop number isn't currently in use
         return empty string if all is good.
         return other message otherwise.
@@ -173,6 +168,7 @@ public class MyActivity extends Activity {
         // regex: check for strings that are only whitespace or empty
         final String pattern2 = "^\\s+$";
         final Pattern r2 = Pattern.compile(pattern2);
+
         String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
         String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
         String msg = "";
@@ -362,73 +358,11 @@ public class MyActivity extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-
-            System.out.println("HELLO!");
             Intent intent = new Intent();
             intent.setClass(MyActivity.this, SettingsActivity.class);
             startActivityForResult(intent, 0);
 
             return true;
-
-            /*
-            LayoutInflater inflater = getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.dialog_settings_layout, null);
-
-            final AlertDialog d = new AlertDialog.Builder(this)
-                    .setView(dialogView)
-                    .setPositiveButton(R.string.dialog_settings_posbtn, null)
-                    .setNegativeButton(R.string.dialog_settings_negbtn, null)
-                    .create();
-
-            d.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialogInterface) {
-                    Button btnPos = d.getButton(AlertDialog.BUTTON_POSITIVE);
-                    Button btnNeg = d.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-                    btnPos.setBackgroundColor(getResources().getColor(R.color.background_color));
-                    btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
-                    EditText etSmsNumber = (EditText) dialogView.findViewById(R.id.smsNumber);
-                    etSmsNumber.setText(SMSNumber);
-                    etSmsNumber.setSelection(SMSNumber.length());
-
-                    btnPos.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String pattern = "^[0-9+]+$";
-                            Pattern r = Pattern.compile(pattern);
-                            final String smsNumber = getStringFromEditText(dialogView, R.id.smsNumber);
-
-                            if (r.matcher(smsNumber).find()) {
-                                // change number in memory
-                                SMSNumber = smsNumber;
-
-                                // change the listener on each list item so it sends texts to the new number
-                                listView = (ListView) findViewById(R.id.list);
-                                // listView.setOnItemClickListener(setListItemClickListener(smsNumber));
-                                listView.setOnItemClickListener(setListItemClickListener());
-
-                                // add to storage
-                                SharedPreferences sharedPref = view.getContext().getSharedPreferences(
-                                        getString(R.string.preference_file_key),
-                                        view.getContext().MODE_PRIVATE
-                                );
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString(getString(R.string.textabus_sms_key), smsNumber);
-                                editor.apply();
-                                d.dismiss();
-                            } else {
-                                TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
-                                tvErrorMsg.setText(R.string.dialog_error_msg_settings_invalid);
-                                tvErrorMsg.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    });
-                }
-            });
-            d.show();
-            return true;
-        */
         }
         return super.onOptionsItemSelected(item);
     }

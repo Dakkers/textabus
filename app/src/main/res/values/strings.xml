@@ -30,9 +30,13 @@
     <string name="data_default_name2">Laurier to UW</string>
     <string name="data_default_num2">3619</string>
     <string name="data_default_phone_number">57555</string>
+
     <string name="title_activity_set_preference">Settings</string>
-
-    <string name="title_activity_settings">NULL</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="settings_sms_title">SMS Number</string>
+    <string name="settings_sms_summary">This is the phone number that SMS messages will be sent to.</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_summary">Created by Dakota St. Laurent. Logo created by Jacky Ngai.</string>
+    <string name="settings_source_title">Source Code</string>
+    <string name="settings_source_summary">View the source code for this app on GitHub.</string>
+    <string name="settings_source_data">https://github.com/StDako/textabus</string>
 </resources>
