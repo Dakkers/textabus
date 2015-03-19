@@ -16,8 +16,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPref = this.getActivity().getSharedPreferences(getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getActivity().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        );
         editor = sharedPref.edit();
 
         // Load the preferences from an XML resource
@@ -37,7 +38,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onResume() {
         super.onResume();
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
     }
 
     @Override

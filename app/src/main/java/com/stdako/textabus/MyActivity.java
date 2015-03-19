@@ -2,6 +2,7 @@ package com.stdako.textabus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,8 +99,9 @@ public class MyActivity extends Activity {
         listView.setAdapter(adapter);
     }
 
-    // I'm sorry
     public AdapterView.OnItemClickListener setListItemClickListener() {
+        // creates and returns the list-item click listener so that I don't have
+        // to define it inside the "OnCreate" function.
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -107,8 +110,10 @@ public class MyActivity extends Activity {
                 // get SMS number; if key lookup fails, return "NULL"
                 String smsNumber  = sharedPref.getString(keySMSNumber, "NULL");
 
-                if (!(smsNumber.equals("NULL")))
+                if (!(smsNumber.equals("NULL"))) {
                     smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
+                    Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_SHORT).show();
+                }
             }
         };
     }
