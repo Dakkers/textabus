@@ -114,15 +114,19 @@ public class MyActivity extends Activity {
     }
 
     public String getStringFromEditText(View dialogView, int Id) {
+        // given a view and the id of an EditText, extract the text as a string
         return ((EditText) dialogView.findViewById(Id)).getText().toString();
     }
 
     public String getStringFromTextView(View view, int Id) {
+        // given a view and the id of a TextView, extract the text as a string
         return ((TextView) view.findViewById(Id)).getText().toString();
     }
 
     public View generateDialogView(String title, Boolean editingStop, View view) {
         /*
+        create the dialog view for adding and editing bus stops.
+
         title: dialog title
         editingStop: true for editing, false for adding (changes EditText hints if true)
         view: parent view (add or edit image)
