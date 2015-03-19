@@ -90,7 +90,8 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(setListItemClickListener());
+        listView.setOnItemLongClickListener(createListItemLongClickListener());
+
         SMSNumber = (String) rawData.get(keySMSNumber);
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
@@ -99,12 +100,12 @@ public class MyActivity extends Activity {
         listView.setAdapter(adapter);
     }
 
-    public AdapterView.OnItemClickListener setListItemClickListener() {
+    public AdapterView.OnItemLongClickListener createListItemLongClickListener() {
         // creates and returns the list-item click listener so that I don't have
         // to define it inside the "OnCreate" function.
-        return new AdapterView.OnItemClickListener() {
+        return new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view.findViewById(R.id.stopNumber);
                 String stopNumber = (String) tv.getText();
                 // get SMS number; if key lookup fails, return "NULL"
@@ -114,6 +115,8 @@ public class MyActivity extends Activity {
                     smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
                     Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_SHORT).show();
                 }
+
+                return true;
             }
         };
     }
@@ -158,7 +161,7 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
-    public String[] checkInput(View dialogView, Boolean checkStopNumbers) {
+    public String[] checkInput(View dialogView, Boolean checkStopNames) {
         /*
         check inputs to see if they're legit. following conditions must hold:
           - stop number length is < 9 chars
@@ -195,13 +198,13 @@ public class MyActivity extends Activity {
         else if (stopName.equals(keyDataSaved))
             msg = getString(R.string.dialog_error_msg_name_nope);
 
-        // check to see if stop number is being used already
+        // check to see if stop name is being used already
         // but only if we ask it to
-        if (checkStopNumbers) {
+        if (checkStopNames) {
             for (Map<String, String> datum : data) {
-                String curStopNumber = datum.get(num);
-                if (curStopNumber.equals(stopNumber)) {
-                    msg = getString(R.string.dialog_error_msg_num_duplicate);
+                String currentStopName = datum.get(name);
+                if (currentStopName.equals(stopName)) {
+                    msg = getString(R.string.dialog_error_msg_name_duplicate);
                     break;
                 }
             }
