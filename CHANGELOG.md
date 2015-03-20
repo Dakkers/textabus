@@ -1,6 +1,9 @@
 # Change Log
 A brief summary of changes made in the app.
 
+## V 0.4.2 (Beta)
+- Prevent user from entering in an invalid phone number
+
 ## [V 0.4.1 (Beta)](https://github.com/StDako/textabus/commit/a00c425806020476384a804fb7484dbeca3e8218)
 - Change the list item to use long clicks instead of clicks to prevent accidental texting
 

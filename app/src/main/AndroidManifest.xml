@@ -20,7 +20,7 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_set_preference" >
+            android:label="@string/title_activity_set_preference">
         </activity>
     </application>
 
