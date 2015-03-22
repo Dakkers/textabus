@@ -1,8 +1,11 @@
 # Change Log
 A brief summary of changes made in the app.
 
+## V 0.4.4 (Beta)
+- Add notification for click events to tell the user to do a long click instead
+
 ## V 0.4.3 (Beta)
-- Change duration for invalid phone number toast to 7 seconds
+- Change duration for invalid phone number notification to 7 seconds
 - Add "Version" and "License" sections to settings
 - Change Settings background colour back to default (grey) because of a weird appearance bug
 - Add Preference Categories "Options" (for SMS Number) and "About Textabus" (for About, License, etc.)

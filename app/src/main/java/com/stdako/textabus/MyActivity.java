@@ -89,6 +89,7 @@ public class MyActivity extends Activity {
         }
 
         listView = (ListView) findViewById(R.id.list);
+        listView.setOnItemClickListener(createListItemClickListener());
         listView.setOnItemLongClickListener(createListItemLongClickListener());
 
         SMSNumber = (String) rawData.get(keySMSNumber);
@@ -97,6 +98,15 @@ public class MyActivity extends Activity {
                 new int[]{R.id.stopName, R.id.stopNumber});
 
         listView.setAdapter(adapter);
+    }
+
+    public AdapterView.OnItemClickListener createListItemClickListener() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(), R.string.toast_click, Toast.LENGTH_LONG).show();
+            }
+        };
     }
 
     public AdapterView.OnItemLongClickListener createListItemLongClickListener() {
@@ -112,7 +122,7 @@ public class MyActivity extends Activity {
 
                 if (!(smsNumber.equals("NULL"))) {
                     smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
-                    Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.toast_send_sms, Toast.LENGTH_SHORT).show();
                 }
 
                 return true;

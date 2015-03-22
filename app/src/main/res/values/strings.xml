@@ -5,15 +5,16 @@
     <string name="preference_file_key">com.stdako.textabus.PREFERENCE_FILE_KEY</string>
     <string name="preference_default_sms_number">57555</string>
     <string name="textabus_sms_key">textabus.SMS_NUMBER_KEY</string>
+
     <string name="dialog_edit_title">Edit Bus Stop</string>
     <string name="dialog_edit_posbtn">Save</string>
     <string name="dialog_edit_neubtn">Cancel</string>
     <string name="dialog_edit_negbtn">Remove</string>
+
     <string name="dialog_add_title">Add Bus Stop</string>
     <string name="dialog_add_posbtn">Add</string>
     <string name="dialog_add_negbtn">Never Mind</string>
-    <string name="dialog_settings_posbtn">Save</string>
-    <string name="dialog_settings_negbtn">Never Mind</string>
+
     <string name="dialog_error_title">Invalid input!</string>
     <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
     <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
@@ -23,13 +24,16 @@
     <string name="dialog_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
     <string name="dialog_error_msg_num_whitespace">Invalid input! The stop number cannot contain only spaces.</string>
     <string name="dialog_error_msg_num_empty">Invalid input! The stop number cannot be empty.</string>
-    <string name="dialog_error_msg_settings_invalid">Invalid input! The phone number can only contain numbers.</string>
     <string name="dialog_error_posbtn">Sorry!</string>
+
     <string name="data_default_name1">DC to Uptown (200)</string>
     <string name="data_default_num1">1123 200</string>
     <string name="data_default_name2">Laurier to UW</string>
     <string name="data_default_num2">3619</string>
     <string name="data_default_phone_number">57555</string>
+
+    <string name="toast_send_sms">Message sent!</string>
+    <string name="toast_click">Press and hold to send a text.</string>
 
     <string name="title_activity_set_preference">Settings</string>
     <string name="prefcat_options_title">Options</string>
