@@ -12,10 +12,5 @@ public class SettingsActivity extends Activity {
 
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
-
-        // change background color of settings menu
-        findViewById(android.R.id.content).setBackgroundColor(
-                this.getResources().getColor(R.color.background_color)
-        );
     }
 }

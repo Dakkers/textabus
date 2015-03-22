@@ -32,11 +32,18 @@
     <string name="data_default_phone_number">57555</string>
 
     <string name="title_activity_set_preference">Settings</string>
-    <string name="settings_sms_title">SMS Number</string>
-    <string name="settings_sms_summary">This is the phone number that SMS messages will be sent to.</string>
-    <string name="settings_about_title">About</string>
-    <string name="settings_about_summary">Created by Dakota St. Laurent. Logo created by Jacky Ngai.</string>
-    <string name="settings_source_title">Source Code</string>
-    <string name="settings_source_summary">View the source code for this app on GitHub.</string>
-    <string name="settings_source_data">https://github.com/StDako/textabus</string>
+    <string name="prefcat_options_title">Options</string>
+    <string name="prefcat_aboutapp_title">About TextABus</string>
+    <string name="pref_sms_title">SMS Number</string>
+    <string name="pref_sms_summary">This is the phone number that SMS messages will be sent to.</string>
+    <string name="pref_about_title">About</string>
+    <string name="pref_about_summary">Created by Dakota St. Laurent. Logo created by Jacky Ngai.</string>
+    <string name="pref_source_title">Source Code</string>
+    <string name="pref_source_summary">View the source code for this app on GitHub (will open in a browser).</string>
+    <string name="pref_source_data">https://github.com/StDako/textabus</string>
+    <string name="pref_license_title">License</string>
+    <string name="pref_license_summary">TextABus is licensed under the GPL license. To view the license, click here (will open in a browser).</string>
+    <string name="pref_license_data">http://www.gnu.org/licenses/gpl-2.0.txt</string>
+    <string name="pref_version_title">Version</string>
+    <string name="pref_version_summary">0.4.3 (Beta)</string>
 </resources>
