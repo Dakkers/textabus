@@ -56,14 +56,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 etp.setText(smsNumber);
 
                 // alert user with TOAST yum
-                for (int i=0; i<2; i++) {
-                    // use a for-loop to make the toast message 7 seconds instead of 3.5 seconds.
-                    Toast.makeText(
-                            etp.getContext(),
-                            "Invalid phone number. Old phone number (" + smsNumber + ") will be used instead.",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                Context ctx = etp.getContext();
+                String msg = "Invalid phone number. Old phone number (" + smsNumber + ") will be used instead.";
+                // use a for-loop to make the toast message 7 seconds instead of 3.5 seconds.
+                for (int i=0; i<2; i++)
+                    Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
             }
         }
     }

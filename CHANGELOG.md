@@ -1,16 +1,20 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.4.4 (Beta)
+## V 0.4.5 (Beta)
+- Change "error" message in Add/Edit stop dialogs to a Toast notification
+- Change limit on stop number to be a max of 48 characters
+
+## [V 0.4.4 (Beta)](https://github.com/StDako/textabus/commit/d44db95f045d0636ea7fa2f8a238f14ede22966c)
 - Add notification for click events to tell the user to do a long click instead
 
-## V 0.4.3 (Beta)
+## [V 0.4.3 (Beta)](https://github.com/StDako/textabus/commit/cb5e0f711d10ca6945e3d3ff53ba86f4e2d2662e)
 - Change duration for invalid phone number notification to 7 seconds
 - Add "Version" and "License" sections to settings
 - Change Settings background colour back to default (grey) because of a weird appearance bug
 - Add Preference Categories "Options" (for SMS Number) and "About Textabus" (for About, License, etc.)
 
-## V 0.4.2 (Beta)
+## [V 0.4.2 (Beta)](https://github.com/StDako/textabus/commit/6e1e029b38b2879c20cdd3a5b83aadc37d9f23f6)
 - Prevent user from entering in an invalid phone number
 
 ## [V 0.4.1 (Beta)](https://github.com/StDako/textabus/commit/a00c425806020476384a804fb7484dbeca3e8218)

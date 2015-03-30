@@ -19,7 +19,7 @@
     <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
     <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
     <string name="dialog_error_msg_name_toolong">Invalid input! The stop name must be less than 49 characters.</string>
-    <string name="dialog_error_msg_num_toolong">Invalid input! The stop number must be less than 9 characters.</string>
+    <string name="dialog_error_msg_num_toolong">Invalid input! The stop number must be less than 49 characters.</string>
     <string name="dialog_error_msg_num_invalidchars">Invalid input! The stop number can only contain numbers and spaces.</string>
     <string name="dialog_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
     <string name="dialog_error_msg_num_whitespace">Invalid input! The stop number cannot contain only spaces.</string>
@@ -49,5 +49,5 @@
     <string name="pref_license_summary">TextABus is licensed under the GPL license. To view the license, click here (will open in a browser).</string>
     <string name="pref_license_data">http://www.gnu.org/licenses/gpl-2.0.txt</string>
     <string name="pref_version_title">Version</string>
-    <string name="pref_version_summary">0.4.4 (Beta)</string>
+    <string name="pref_version_summary">0.4.5 (Beta)</string>
 </resources>

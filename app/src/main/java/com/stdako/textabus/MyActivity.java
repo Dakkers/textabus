@@ -2,6 +2,7 @@ package com.stdako.textabus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -173,7 +174,7 @@ public class MyActivity extends Activity {
     public String[] checkInput(View dialogView, Boolean checkStopNames) {
         /*
         check inputs to see if they're legit. following conditions must hold:
-          - stop number length is < 9 chars
+          - stop number length is < 49 chars
           - stop number is not empty
           - stop name length is < 49 chars
           - stop number has only numeric/whitespace chars
@@ -194,7 +195,7 @@ public class MyActivity extends Activity {
         String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
         String msg = "";
 
-        if (stopNumber.length() > 8)
+        if (stopNumber.length() > 48)
             msg = getString(R.string.dialog_error_msg_num_toolong);
         else if (stopNumber.length() == 0)
             msg = getString(R.string.dialog_error_msg_num_empty);
@@ -278,9 +279,7 @@ public class MyActivity extends Activity {
                                 }
                             }
                         } else {
-                            TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
-                            tvErrorMsg.setText(msg);
-                            tvErrorMsg.setVisibility(View.VISIBLE);
+                            veryLongToast(d.getContext(), msg);
                         }
                     }
                 });
@@ -356,9 +355,7 @@ public class MyActivity extends Activity {
                             editor.apply();
                             d.dismiss();
                         } else {
-                            TextView tvErrorMsg = (TextView) d.findViewById(R.id.errorMessage);
-                            tvErrorMsg.setText(msg);
-                            tvErrorMsg.setVisibility(View.VISIBLE);
+                            veryLongToast(d.getContext(), msg);
                         }
                     }
                 });
@@ -386,5 +383,11 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void veryLongToast(Context ctx, String msg) {
+        // Makes a toast appear for 5.5 seconds (short + long)
+        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
     }
 }
