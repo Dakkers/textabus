@@ -5,6 +5,7 @@
     <string name="preference_file_key">com.stdako.textabus.PREFERENCE_FILE_KEY</string>
     <string name="preference_default_sms_number">57555</string>
     <string name="textabus_sms_key">textabus.SMS_NUMBER_KEY</string>
+    <string name="textabus_export_key">textabus.EXPORT_DATA_KEY</string>
 
     <string name="dialog_edit_title">Edit Bus Stop</string>
     <string name="dialog_edit_posbtn">Save</string>
@@ -23,6 +24,7 @@
     <string name="dialog_error_msg_num_invalidchars">Invalid input! The stop number can only contain numbers and spaces.</string>
     <string name="dialog_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
     <string name="dialog_error_msg_num_whitespace">Invalid input! The stop number cannot contain only spaces.</string>
+    <string name="dialog_error_msg_name_tab">Invalid input! The stop name cannot contain tabs.</string>
     <string name="dialog_error_msg_num_empty">Invalid input! The stop number cannot be empty.</string>
     <string name="dialog_error_posbtn">Sorry!</string>
 
@@ -40,6 +42,8 @@
     <string name="prefcat_aboutapp_title">About TextABus</string>
     <string name="pref_sms_title">SMS Number</string>
     <string name="pref_sms_summary">This is the phone number that SMS messages will be sent to.</string>
+    <string name="pref_export_title">Export Data</string>
+    <string name="pref_export_summary">If you want to back up your data, click here to save it to a file.</string>
     <string name="pref_about_title">About</string>
     <string name="pref_about_summary">Created by Dakota St. Laurent. Logo created by Jacky Ngai.</string>
     <string name="pref_source_title">Source Code</string>

@@ -1,4 +1,4 @@
-package com.stdako.textabus;
+package com.saintdako.textabus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -39,8 +39,9 @@ public class MyActivity extends Activity {
 
     final public static String name = "name";
     final public static String num = "num";
-    final public static String keyDataSaved = "textabus.DATA_SAVED_KEY";
-    final public static String keySMSNumber = "textabus.SMS_NUMBER_KEY";
+    final public static String keyDataSaved  = "textabus.DATA_SAVED_KEY";
+    final public static String keySMSNumber  = "textabus.SMS_NUMBER_KEY";
+    final public static String keyDataExport = "textabus.DATA_EXPORT_KEY";
     final SmsManager smsManager = SmsManager.getDefault();
 
     @Override
@@ -205,6 +206,8 @@ public class MyActivity extends Activity {
             msg = getString(R.string.dialog_error_msg_num_invalidchars);
         else if (r2.matcher(stopNumber).find())
             msg = getString(R.string.dialog_error_msg_num_whitespace);
+        else if (stopName.indexOf('\t') != -1)
+            msg = getString(R.string.dialog_error_msg_name_tab);
         else if (stopName.equals(keyDataSaved))
             msg = getString(R.string.dialog_error_msg_name_nope);
 
@@ -390,4 +393,5 @@ public class MyActivity extends Activity {
         Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
     }
+
 }

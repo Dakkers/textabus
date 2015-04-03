@@ -1,4 +1,4 @@
-package com.stdako.textabus;
+package com.saintdako.textabus;
 
 import android.app.Activity;
 import android.os.Bundle;

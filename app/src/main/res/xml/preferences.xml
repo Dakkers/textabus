@@ -5,10 +5,16 @@
     <PreferenceCategory
         android:title="@string/prefcat_options_title">
         <EditTextPreference
-            android:defaultValue="@string/preference_default_sms_number"
-            android:key="@string/textabus_sms_key"
-            android:summary="@string/pref_sms_summary"
             android:title="@string/pref_sms_title"
+            android:summary="@string/pref_sms_summary"
+            android:key="@string/textabus_sms_key"
+            android:defaultValue="@string/preference_default_sms_number"
+        />
+
+        <Preference
+            android:title="@string/pref_export_title"
+            android:summary="@string/pref_export_summary"
+            android:key="@string/textabus_export_key"
         />
     </PreferenceCategory>
 

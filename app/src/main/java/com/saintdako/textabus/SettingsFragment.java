@@ -1,4 +1,4 @@
-package com.stdako.textabus;
+package com.saintdako.textabus;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,29 +12,24 @@ import java.util.regex.Pattern;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    String smsNumber;
-
-    public static final String keySMSNumber = "textabus.SMS_NUMBER_KEY";
+    final public static String keySMSNumber  = "textabus.SMS_NUMBER_KEY";
     SharedPreferences.Editor editor;
+    String smsNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences sharedPref = this.getActivity().getSharedPreferences(
+        final SharedPreferences sharedPref = this.getActivity().getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE
         );
         editor = sharedPref.edit();
 
-        // EditTextPreference smsETP = (EditTextPreference) findPreference(keySMSNumber);
-        // smsETP.setText(sharedPref.getString(keySMSNumber, "57555"));
-
         // get the current number (should be valid...)
         smsNumber = sharedPref.getString(keySMSNumber, "57555");
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
     }
 
     @Override
@@ -88,4 +83,5 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         return true;
     }
+
 }
