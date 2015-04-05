@@ -20,16 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.saintdako.textabus.MyActivity.*;
-
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     final public static String keySMSNumber    = "textabus.SMS_NUMBER_KEY";
     final public static String keyDataSaved    = "textabus.DATA_SAVED_KEY";
     final public static String keyDataImported = "textabus.DATA_IMPORTED_KEY";
-    final public static String name = "name";
-    final public static String num = "num";
     final public Integer LENGTH_LONG  = Toast.LENGTH_LONG;
     final public Integer LENGTH_SHORT = Toast.LENGTH_SHORT;
     SharedPreferences sharedPref;
@@ -153,11 +149,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         number, separated by a tab.
         */
 
-        // get shared pref & editor
+        // get shared pref, create string to be written to file
         Map<String,?> rawData = sharedPref.getAll();
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        // string to be written to file
         String content = "";
 
         // loop over data

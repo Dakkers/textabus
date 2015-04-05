@@ -43,7 +43,6 @@ public class MyActivity extends Activity {
     final public static String keyDataSaved    = "textabus.DATA_SAVED_KEY";
     final public static String keySMSNumber    = "textabus.SMS_NUMBER_KEY";
     final public static String keyDataImported = "textabus.DATA_IMPORTED_KEY";
-    final SmsManager smsManager = SmsManager.getDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +107,7 @@ public class MyActivity extends Activity {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), R.string.toast_click, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.toast_click, Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -125,6 +124,7 @@ public class MyActivity extends Activity {
                 String smsNumber  = sharedPref.getString(keySMSNumber, "NULL");
 
                 if (!(smsNumber.equals("NULL"))) {
+                    SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(smsNumber, null, stopNumber, null, null);
                     Toast.makeText(getApplicationContext(), R.string.toast_send_sms, Toast.LENGTH_SHORT).show();
                 }
@@ -174,39 +174,23 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
-    public String[] checkInput(View dialogView, Boolean checkStopNames) {
+    public String checkInput(Context ctx, String stopName, String stopNumber) {
         /*
-        TODO: this shouldn't need the dialogView. Instead, the stopName and stopNumber
-        TODO: should be passed as arguments.
-
-        Given the dialog view, checks the stopName and stopNumber. If
-        checkStopNames is true, then we'll check for duplicates, but this will
-        only be true if we are adding a stop.
-         */
-
-        String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
-        String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-
-        String msg = checkInputHelper(dialogView.getContext(), stopName, stopNumber);
-
+        For the dialogs, checks to see if the stop name and stop number are
+        good, and then checks to see if the stop name we are trying to
+        add is a duplicate.
+        */
+        String msg = checkInputHelper(ctx, stopName, stopNumber);
         // check to see if stop name is being used already
-        // but only if we ask it to
-        if (checkStopNames) {
-            for (Map<String, String> datum : data) {
-                String currentStopName = datum.get(name);
-                if (currentStopName.equals(stopName)) {
-                    msg = getString(R.string.dialog_error_msg_name_duplicate);
-                    break;
-                }
+        for (Map<String, String> datum : data) {
+            String currentStopName = datum.get(name);
+            if (currentStopName.equals(stopName)) {
+                msg = getString(R.string.dialog_error_msg_name_duplicate);
+                break;
             }
         }
 
-        /*
-            TODO: this should return an object with three attributes,
-            TODO: and not an array of strings. (? I guess)
-
-         */
-        return new String[] {msg, stopName, stopNumber};
+        return msg;
     }
 
     public static String checkInputHelper(Context ctx, String stopName, String stopNumber) {
@@ -280,31 +264,28 @@ public class MyActivity extends Activity {
                         // get new info...
                         String newStopName = getStringFromEditText(dialogView, R.id.itemStopName);
                         String newStopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-                        String[] info = checkInput(dialogView, false);
-                        String msg = info[0];
+                        String msg = checkInput(dialogView.getContext(), newStopName, newStopNumber);
 
                         if (msg.equals("")) {
-                            // update info
-                            for (Map<String, String> datum : data) {
-                                if (datum.get(name).equals(stopName)) {
-                                    // change old key-val pair in memory
-                                    datum.put(name, newStopName);
-                                    datum.put(num, newStopNumber);
-                                    adapter.notifyDataSetChanged();
+                            // find out where old datum is in data, replace it with new datum
+                            Map<String, String> newDatum, oldDatum = new HashMap<String, String>(2);
+                            oldDatum.put(name, stopName);
+                            oldDatum.put(num, stopNumber);
+                            newDatum = data.get(data.indexOf(oldDatum));
+                            newDatum.put(name, newStopName);
+                            newDatum.put(num, newStopNumber);
+                            adapter.notifyDataSetChanged();
 
-                                    // remove old key-val pair from storage, add new
-                                    SharedPreferences sharedPref = view.getContext().getSharedPreferences(
-                                            getString(R.string.preference_file_key),
-                                            view.getContext().MODE_PRIVATE
-                                    );
-                                    SharedPreferences.Editor editor = sharedPref.edit();
-                                    editor.remove(stopName);
-                                    editor.putString(newStopName, newStopNumber);
-                                    editor.apply();
-                                    d.dismiss();
-                                    break;
-                                }
-                            }
+                            // update datum in storage
+                            SharedPreferences sharedPref = view.getContext().getSharedPreferences(
+                                    getString(R.string.preference_file_key),
+                                    view.getContext().MODE_PRIVATE
+                            );
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.remove(stopName);
+                            editor.putString(newStopName, newStopNumber);
+                            editor.apply();
+                            d.dismiss();
                         } else {
                             veryLongToast(d.getContext(), msg);
                         }
@@ -359,10 +340,9 @@ public class MyActivity extends Activity {
                 btnPos.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String[] info = checkInput(dialogView, true);
-                        String msg = info[0];
-                        String stopName = info[1];
-                        String stopNumber = info[2];
+                        String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
+                        String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
+                        String msg = checkInput(dialogView.getContext(), stopName, stopNumber);
 
                         if (msg.equals("")) {
                             // add to memory (list view)

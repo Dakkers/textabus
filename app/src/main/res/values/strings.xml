@@ -47,7 +47,7 @@
     <!-- Preferences -->
     <string name="title_activity_set_preference">Settings</string>
     <string name="prefcat_options_title">Options</string>
-    <string name="prefcat_aboutapp_title">About TextABus</string>
+    <string name="prefcat_aboutapp_title">App Info</string>
 
     <string name="pref_sms_title">SMS Number</string>
     <string name="pref_sms_summary">This is the phone number that SMS messages will be sent to.</string>

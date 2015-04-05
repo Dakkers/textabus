@@ -1,7 +1,10 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.5.0 (Beta)
+## V 0.5.1 (Beta)
+- Prevent user from editing a stop name to be a duplicate of another stop
+
+## [V 0.5.0 (Beta)](https://github.com/StDako/textabus/commit/c9b44f70e9d02e12245156a1e7ea72bb404f5495)
 - Add import and export feature
 - Fix "bug" in adding keys as stop names
 
