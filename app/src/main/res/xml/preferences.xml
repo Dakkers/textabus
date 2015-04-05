@@ -12,6 +12,12 @@
         />
 
         <Preference
+            android:title="@string/pref_import_title"
+            android:summary="@string/pref_import_summary"
+            android:key="@string/textabus_import_key"
+        />
+
+        <Preference
             android:title="@string/pref_export_title"
             android:summary="@string/pref_export_summary"
             android:key="@string/textabus_export_key"

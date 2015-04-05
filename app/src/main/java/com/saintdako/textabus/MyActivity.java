@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,9 @@ public class MyActivity extends Activity {
 
     final public static String name = "name";
     final public static String num = "num";
-    final public static String keyDataSaved  = "textabus.DATA_SAVED_KEY";
-    final public static String keySMSNumber  = "textabus.SMS_NUMBER_KEY";
-    final public static String keyDataExport = "textabus.DATA_EXPORT_KEY";
+    final public static String keyDataSaved    = "textabus.DATA_SAVED_KEY";
+    final public static String keySMSNumber    = "textabus.SMS_NUMBER_KEY";
+    final public static String keyDataImported = "textabus.DATA_IMPORTED_KEY";
     final SmsManager smsManager = SmsManager.getDefault();
 
     @Override
@@ -78,10 +79,11 @@ public class MyActivity extends Activity {
             // reinitialize rawData, as sharedPreferences were populated with default values.
             rawData = sharedPref.getAll();
         } else {
+            // update data
             List<String> keys = new ArrayList<String>(rawData.keySet());
             Collections.sort(keys);
             for (String key : keys) {
-                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber)) {
+                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber) && !key.equals(keyDataImported)) {
                     Map<String,String> datum = new HashMap<String, String>(2);
                     datum.put(name, key);
                     datum.put(num, (String) rawData.get(key));
@@ -174,42 +176,18 @@ public class MyActivity extends Activity {
 
     public String[] checkInput(View dialogView, Boolean checkStopNames) {
         /*
-        check inputs to see if they're legit. following conditions must hold:
-          - stop number length is < 49 chars
-          - stop number is not empty
-          - stop name length is < 49 chars
-          - stop number has only numeric/whitespace chars
-          - stop number is not only whitespace
-          - stop number isn't currently in use
-        return empty string if all is good.
-        return other message otherwise.
-         */
+        TODO: this shouldn't need the dialogView. Instead, the stopName and stopNumber
+        TODO: should be passed as arguments.
 
-        // regex: check for anything that isn't numbers or whitespace
-        final String pattern1 = "[^0-9\\s]";
-        final Pattern r1 = Pattern.compile(pattern1);
-        // regex: check for strings that are only whitespace or empty
-        final String pattern2 = "^\\s+$";
-        final Pattern r2 = Pattern.compile(pattern2);
+        Given the dialog view, checks the stopName and stopNumber. If
+        checkStopNames is true, then we'll check for duplicates, but this will
+        only be true if we are adding a stop.
+         */
 
         String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
         String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-        String msg = "";
 
-        if (stopNumber.length() > 48)
-            msg = getString(R.string.dialog_error_msg_num_toolong);
-        else if (stopNumber.length() == 0)
-            msg = getString(R.string.dialog_error_msg_num_empty);
-        else if (stopName.length() > 48)
-            msg = getString(R.string.dialog_error_msg_name_toolong);
-        else if (r1.matcher(stopNumber).find())
-            msg = getString(R.string.dialog_error_msg_num_invalidchars);
-        else if (r2.matcher(stopNumber).find())
-            msg = getString(R.string.dialog_error_msg_num_whitespace);
-        else if (stopName.indexOf('\t') != -1)
-            msg = getString(R.string.dialog_error_msg_name_tab);
-        else if (stopName.equals(keyDataSaved))
-            msg = getString(R.string.dialog_error_msg_name_nope);
+        String msg = checkInputHelper(dialogView.getContext(), stopName, stopNumber);
 
         // check to see if stop name is being used already
         // but only if we ask it to
@@ -222,7 +200,52 @@ public class MyActivity extends Activity {
                 }
             }
         }
+
+        /*
+            TODO: this should return an object with three attributes,
+            TODO: and not an array of strings. (? I guess)
+
+         */
         return new String[] {msg, stopName, stopNumber};
+    }
+
+    public static String checkInputHelper(Context ctx, String stopName, String stopNumber) {
+        /*
+        check inputs to see if they're legit. following conditions must hold:
+          - stop number length is < 49 chars
+          - stop number is not empty
+          - stop name length is < 49 chars
+          - stop number has only numeric/whitespace chars
+          - stop number is not only whitespace
+          - stop number isn't currently in use
+        return empty string if all is good.
+        return other message otherwise.
+         */
+        String msg = "";
+
+        // regex: check for anything that isn't numbers or whitespace
+        final String pattern1 = "[^0-9\\s]";
+        final Pattern r1 = Pattern.compile(pattern1);
+        // regex: check for strings that are only whitespace or empty
+        final String pattern2 = "^\\s+$";
+        final Pattern r2 = Pattern.compile(pattern2);
+
+        if (stopNumber.length() > 48)
+            msg = ctx.getString(R.string.dialog_error_msg_num_toolong);
+        else if (stopNumber.length() == 0)
+            msg = ctx.getString(R.string.dialog_error_msg_num_empty);
+        else if (stopName.length() > 48)
+            msg = ctx.getString(R.string.dialog_error_msg_name_toolong);
+        else if (r1.matcher(stopNumber).find())
+            msg = ctx.getString(R.string.dialog_error_msg_num_invalidchars);
+        else if (r2.matcher(stopNumber).find())
+            msg = ctx.getString(R.string.dialog_error_msg_num_whitespace);
+        else if (stopName.indexOf('\t') != -1)
+            msg = ctx.getString(R.string.dialog_error_msg_name_tab);
+        else if (stopName.equals(keyDataSaved) || stopName.equals(keySMSNumber) ||stopName.equals(keyDataImported))
+            msg = ctx.getString(R.string.dialog_error_msg_name_nope);
+
+        return msg;
     }
 
     public void editItem(View view) {
@@ -236,6 +259,7 @@ public class MyActivity extends Activity {
                 .create();
 
         view = (View) view.getParent();
+        // these are the current stopName & stopNumber
         final String stopName = getStringFromTextView(view, R.id.stopName);
         final String stopNumber = getStringFromTextView(view, R.id.stopNumber);
 
@@ -262,7 +286,7 @@ public class MyActivity extends Activity {
                         if (msg.equals("")) {
                             // update info
                             for (Map<String, String> datum : data) {
-                                if (datum.get(num).equals(stopNumber)) {
+                                if (datum.get(name).equals(stopName)) {
                                     // change old key-val pair in memory
                                     datum.put(name, newStopName);
                                     datum.put(num, newStopNumber);
@@ -394,4 +418,77 @@ public class MyActivity extends Activity {
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onResume() {
+        /* Contains logic for adding imported data to view. */
+        super.onResume();
+
+        // check to see if any data was imported
+        if (sharedPref.getString(keyDataImported, "false").equals("true")) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            String stopName, stopNumber, newStopNumber;
+            Map<String, String> datum, newDatum;
+            Boolean dataHasChanged = false;
+
+            // loop over data, get the location (index) of each stop
+            // use a map to hold the data (stopName --> index)
+            Map<String, Integer> stopIndices = new HashMap<String, Integer>(data.size());
+            for (int i = 0; i < data.size(); i++) {
+                stopName = data.get(i).get(name);
+                stopIndices.put(stopName, i);
+            }
+
+            // loop over shared preferences
+            Map<String,?> rawData = sharedPref.getAll();
+            List<String> keys = new ArrayList<String>(rawData.keySet());
+            Integer stopIndex;
+            for (String key : keys) {
+                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber) && !key.equals(keyDataImported)) {
+                    // get index of stopName; if it is null, then it hasn't been added to
+                    // the data in memory. if it is not null, check to see if the stop
+                    // number has changed.
+                    stopIndex = stopIndices.get(key);
+                    if (stopIndex == null) {
+                        newDatum = new HashMap<String, String>(2);
+                        newDatum.put(name, key);
+                        newDatum.put(num, (String) rawData.get(key));
+                        data.add(newDatum);
+                        dataHasChanged = true;
+                    } else {
+                        // get the stop corresponding to the index, then get its stop number
+                        datum = data.get(stopIndex);
+                        stopNumber = datum.get(num);
+
+                        // get the version saved in storage then check if they're not equal
+                        newStopNumber = (String) rawData.get(key);
+                        if (!stopNumber.equals(newStopNumber)) {
+                            // they're equal; replace old value.
+                            newDatum = new HashMap<String, String>(2);
+                            newDatum.put(name, key);
+                            newDatum.put(num, newStopNumber);
+                            data.set(stopIndex, newDatum);
+                            dataHasChanged = true;
+                        }
+                    }
+                }
+            }
+
+            if (dataHasChanged) {
+                Collections.sort(data, stopNameComparator);
+                adapter.notifyDataSetChanged();
+            }
+
+            editor.putString(keyDataImported, "false");
+            editor.apply();
+        }
+    }
+
+    public Comparator<Map<String, String>> stopNameComparator = new Comparator<Map<String, String>>() {
+        // Comparator for comparing a Map<String,String> to another
+        // Used for alphabetizing stops by stop name
+        public int compare(Map<String, String> m1, Map<String, String> m2) {
+            return m1.get(name).compareTo(m2.get(name));
+        }
+    };
 }

@@ -6,16 +6,21 @@
     <string name="preference_default_sms_number">57555</string>
     <string name="textabus_sms_key">textabus.SMS_NUMBER_KEY</string>
     <string name="textabus_export_key">textabus.EXPORT_DATA_KEY</string>
+    <string name="textabus_import_key">textabus.IMPORT_DATA_KEY</string>
+    <string name="textabus_data_imported_key">textabus.DATA_IMPORTED_KEY</string>
 
+    <!-- Edit dialog -->
     <string name="dialog_edit_title">Edit Bus Stop</string>
     <string name="dialog_edit_posbtn">Save</string>
     <string name="dialog_edit_neubtn">Cancel</string>
     <string name="dialog_edit_negbtn">Remove</string>
 
+    <!-- Add dialog -->
     <string name="dialog_add_title">Add Bus Stop</string>
     <string name="dialog_add_posbtn">Add</string>
     <string name="dialog_add_negbtn">Never Mind</string>
 
+    <!-- Error messages for both Add & Edit dialogs -->
     <string name="dialog_error_title">Invalid input!</string>
     <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
     <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
@@ -28,30 +33,57 @@
     <string name="dialog_error_msg_num_empty">Invalid input! The stop number cannot be empty.</string>
     <string name="dialog_error_posbtn">Sorry!</string>
 
+    <!-- Default data -->
     <string name="data_default_name1">DC to Uptown (200)</string>
     <string name="data_default_num1">1123 200</string>
     <string name="data_default_name2">Laurier to UW</string>
     <string name="data_default_num2">3619</string>
     <string name="data_default_phone_number">57555</string>
 
+    <!-- Toasts for the main activity -->
     <string name="toast_send_sms">Message sent!</string>
     <string name="toast_click">Press and hold to send a text.</string>
 
+    <!-- Preferences -->
     <string name="title_activity_set_preference">Settings</string>
     <string name="prefcat_options_title">Options</string>
     <string name="prefcat_aboutapp_title">About TextABus</string>
+
     <string name="pref_sms_title">SMS Number</string>
     <string name="pref_sms_summary">This is the phone number that SMS messages will be sent to.</string>
+
+    <string name="pref_import_title">Import Data</string>
+    <string name="pref_import_summary">To import data, put "TextABus-Data.txt" in the same location
+        as it was saved and click here.</string>
+
     <string name="pref_export_title">Export Data</string>
-    <string name="pref_export_summary">If you want to back up your data, click here to save it to a file.</string>
+    <string name="pref_export_summary">To back up your data, click here. To copy it to a computer,
+        connect your phone to a computer and look for "TextABus-Data.txt".</string>
+
     <string name="pref_about_title">About</string>
     <string name="pref_about_summary">Created by Dakota St. Laurent. Logo created by Jacky Ngai.</string>
+
     <string name="pref_source_title">Source Code</string>
-    <string name="pref_source_summary">View the source code for this app on GitHub (will open in a browser).</string>
+    <string name="pref_source_summary">View the source code for this app on GitHub (will open in a
+        browser).</string>
     <string name="pref_source_data">https://github.com/StDako/textabus</string>
+
     <string name="pref_license_title">License</string>
-    <string name="pref_license_summary">TextABus is licensed under the GPL license. To view the license, click here (will open in a browser).</string>
+    <string name="pref_license_summary">TextABus is licensed under the GPL license. To view the
+        license, click here (will open in a browser).</string>
     <string name="pref_license_data">http://www.gnu.org/licenses/gpl-2.0.txt</string>
+
     <string name="pref_version_title">Version</string>
-    <string name="pref_version_summary">0.4.5 (Beta)</string>
+    <string name="pref_version_summary">0.5.0 (Beta)</string>
+
+    <!-- Toasts for preferences -->
+    <string name="toast_not_writable">"Insufficient permissions to save file.</string>
+    <string name="toast_not_readable">Insufficient permissions to open file.</string>
+    <string name="toast_write_success">File successfully saved!</string>
+    <string name="toast_write_fail">Saving file failed.</string>
+    <string name="toast_read_success">Data successfully imported!</string>
+    <string name="toast_read_neutral">Some data was not imported.</string>
+    <string name="toast_empty_file">Importing data failed due to an empty file.</string>
+    <string name="toast_no_file">Importing data failed due to no file.</string>
+    <string name="toast_read_fail">Importing data failed.</string>
 </resources>

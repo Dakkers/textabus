@@ -1,7 +1,11 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.4.5 (Beta)
+## V 0.5.0 (Beta)
+- Add import and export feature
+- Fix "bug" in adding keys as stop names
+
+## [V 0.4.5 (Beta)](https://github.com/StDako/textabus/commit/63081a1efb2f6e0d5b1272b6ef1e36ad6f4ba06c)
 - Change "error" message in Add/Edit stop dialogs to a Toast notification
 - Change limit on stop number to be a max of 48 characters
 

@@ -17,11 +17,12 @@ My first (and therefore probably awfully written) Android app. It allows you to 
 - update button sizes. they're a bit too small, it seems.
 - Pebble integration (that was actually the purpose in the beginning)
 - add importing and exporting feature in settings
+- change from using SharedPreferences to SQLite
 
 ## Acknowledgements
 Thanks to:
-- [Pieter Stam](https://github.com/stampieter) for being on my ass about finishing this, being a Beta tester and suggesting the idea of adding a Toast when a text is sent
-- [Imtiaz Hussain](https://github.com/imtizzle) for telling me that a stop number of only whitespace will cause a crash upon texting
+- [Pieter Stam](https://github.com/stampieter) for being on my ass about finishing this, suggesting the idea of adding a Toast when a text is sent, and for being a Beta tester
+- [Imtiaz Hussain](https://github.com/imtizzle) for telling me that a stop number of only whitespace will cause a crash upon texting, and for being a Beta tester
 - Duncan Forster for being a Beta tester
 - [Christian de Angelis](https://github.com/cdeange) and [Shane Creighton-Young](https://github.com/srcreigh) for helping me out with Android/Java stuff
 
