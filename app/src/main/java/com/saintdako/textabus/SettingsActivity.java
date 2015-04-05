@@ -9,6 +9,11 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // change background color of settings menu
+        findViewById(android.R.id.content).setBackgroundColor(
+                this.getResources().getColor(R.color.background_color)
+        );
+
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new SettingsFragment()).commit();
     }

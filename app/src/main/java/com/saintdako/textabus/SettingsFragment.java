@@ -35,6 +35,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
