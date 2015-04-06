@@ -1,7 +1,11 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.5.1 (Beta)
+## V 0.5.2 (Beta)
+- Prevent user from entering in a tab in the stop number, as well
+- Exporting data works again
+
+## [V 0.5.1 (Beta)](https://github.com/StDako/textabus/commit/1409c0e6017688c8044e655a726a11e76232b08e)
 - Prevent user from editing a stop name to be a duplicate of another stop
 - Change background color of settings menu
 - Fix "bug" where background color flickers after keyboard disappears
@@ -9,6 +13,7 @@ A brief summary of changes made in the app.
 ## [V 0.5.0 (Beta)](https://github.com/StDako/textabus/commit/c9b44f70e9d02e12245156a1e7ea72bb404f5495)
 - Add import and export feature
 - Fix "bug" in adding keys as stop names
+- Prevent user from entering in a tab in the stop name
 
 ## [V 0.4.5 (Beta)](https://github.com/StDako/textabus/commit/63081a1efb2f6e0d5b1272b6ef1e36ad6f4ba06c)
 - Change "error" message in Add/Edit stop dialogs to a Toast notification

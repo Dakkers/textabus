@@ -21,18 +21,18 @@
     <string name="dialog_add_posbtn">Add</string>
     <string name="dialog_add_negbtn">Never Mind</string>
 
-    <!-- Error messages for both Add & Edit dialogs -->
-    <string name="dialog_error_title">Invalid input!</string>
-    <string name="dialog_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
-    <string name="dialog_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
-    <string name="dialog_error_msg_name_toolong">Invalid input! The stop name must be less than 49 characters.</string>
-    <string name="dialog_error_msg_num_toolong">Invalid input! The stop number must be less than 49 characters.</string>
-    <string name="dialog_error_msg_num_invalidchars">Invalid input! The stop number can only contain numbers and spaces.</string>
-    <string name="dialog_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
-    <string name="dialog_error_msg_num_whitespace">Invalid input! The stop number cannot contain only spaces.</string>
-    <string name="dialog_error_msg_name_tab">Invalid input! The stop name cannot contain tabs.</string>
-    <string name="dialog_error_msg_num_empty">Invalid input! The stop number cannot be empty.</string>
-    <string name="dialog_error_posbtn">Sorry!</string>
+    <!-- Error Toasts for both Add & Edit dialogs -->
+    <string name="toast_error_title">Invalid input!</string>
+    <string name="toast_error_msg_name_duplicate">Invalid input! That stop name is already in use.</string>
+    <string name="toast_error_msg_num_duplicate">Invalid input! That stop number is already in use.</string>
+    <string name="toast_error_msg_name_toolong">Invalid input! The stop name must be less than 49 characters.</string>
+    <string name="toast_error_msg_num_toolong">Invalid input! The stop number must be less than 49 characters.</string>
+    <string name="toast_error_msg_num_invalidchars">Invalid input! The stop number can only contain numbers and spaces.</string>
+    <string name="toast_error_msg_num_whitespace">Invalid input! The stop number cannot contain only spaces.</string>
+    <string name="toast_error_msg_name_tab">Invalid input! The stop name cannot contain tabs.</string>
+    <string name="toast_error_msg_num_tab">Invalid input! The stop number cannot contain tabs.</string>
+    <string name="toast_error_msg_num_empty">Invalid input! The stop number cannot be empty.</string>
+    <string name="toast_error_msg_name_nope">Invalid input! That stop name cannot be used.</string>
 
     <!-- Default data -->
     <string name="data_default_name1">DC to Uptown (200)</string>
@@ -41,7 +41,7 @@
     <string name="data_default_num2">3619</string>
     <string name="data_default_phone_number">57555</string>
 
-    <!-- Toasts for the main activity -->
+    <!-- General toasts for the main activity -->
     <string name="toast_send_sms">Message sent!</string>
     <string name="toast_click">Press and hold to send a text.</string>
     <string name="toast_save_fail">Could not save stop to storage.</string>
@@ -77,7 +77,7 @@
     <string name="pref_license_data">http://www.gnu.org/licenses/gpl-2.0.txt</string>
 
     <string name="pref_version_title">Version</string>
-    <string name="pref_version_summary">0.5.1 (Beta)</string>
+    <string name="pref_version_summary">0.5.2 (Beta)</string>
 
     <!-- Toasts for preferences -->
     <string name="toast_not_writable">"Insufficient permissions to save file.</string>

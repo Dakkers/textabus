@@ -144,7 +144,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         */
 
         // get shared pref, create string to be written to file
-        JSONObject rawData = new JSONObject().optJSONObject(sharedPref.getString(keyUserData, "NULL"));
+        JSONObject rawData;
+        try {
+            rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+        } catch (JSONException e) {
+            Toast.makeText(preference.getContext(), R.string.toast_write_fail, LENGTH_LONG);
+            e.printStackTrace();
+            return;
+        }
         String content = "";
 
         // loop over data

@@ -228,18 +228,20 @@ public class MyActivity extends Activity {
         final Pattern r2 = Pattern.compile(pattern2);
 
         if (stopNumber.length() > 48)
-            msg = ctx.getString(R.string.dialog_error_msg_num_toolong);
+            msg = ctx.getString(R.string.toast_error_msg_num_toolong);
         else if (stopNumber.length() == 0)
-            msg = ctx.getString(R.string.dialog_error_msg_num_empty);
+            msg = ctx.getString(R.string.toast_error_msg_num_empty);
         else if (stopName.length() > 48)
-            msg = ctx.getString(R.string.dialog_error_msg_name_toolong);
+            msg = ctx.getString(R.string.toast_error_msg_name_toolong);
         else if (r1.matcher(stopNumber).find())
-            msg = ctx.getString(R.string.dialog_error_msg_num_invalidchars);
+            msg = ctx.getString(R.string.toast_error_msg_num_invalidchars);
         else if (r2.matcher(stopNumber).find())
-            msg = ctx.getString(R.string.dialog_error_msg_num_whitespace);
+            msg = ctx.getString(R.string.toast_error_msg_num_whitespace);
         else if (stopName.indexOf('\t') != -1)
-            msg = ctx.getString(R.string.dialog_error_msg_name_tab);
-        else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) ||stopName.equals(keyDataImported))
+            msg = ctx.getString(R.string.toast_error_msg_name_tab);
+        else if (stopNumber.indexOf('\t') != -1)
+            msg = ctx.getString(R.string.toast_error_msg_num_tab);
+        else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) || stopName.equals(keyDataImported))
             msg = ctx.getString(R.string.dialog_error_msg_name_nope);
 
         return msg;
