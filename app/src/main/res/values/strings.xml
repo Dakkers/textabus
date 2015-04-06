@@ -8,6 +8,7 @@
     <string name="textabus_export_key">textabus.EXPORT_DATA_KEY</string>
     <string name="textabus_import_key">textabus.IMPORT_DATA_KEY</string>
     <string name="textabus_data_imported_key">textabus.DATA_IMPORTED_KEY</string>
+    <string name="textabus_user_data_key">textabus.USER_DATA_KEY</string>
 
     <!-- Edit dialog -->
     <string name="dialog_edit_title">Edit Bus Stop</string>
@@ -43,6 +44,8 @@
     <!-- Toasts for the main activity -->
     <string name="toast_send_sms">Message sent!</string>
     <string name="toast_click">Press and hold to send a text.</string>
+    <string name="toast_save_fail">Could not save stop to storage.</string>
+    <string name="toast_general_error">Whoops! Something went wrong.</string>
 
     <!-- Preferences -->
     <string name="title_activity_set_preference">Settings</string>
@@ -83,7 +86,7 @@
     <string name="toast_write_fail">Saving file failed.</string>
     <string name="toast_read_success">Data successfully imported!</string>
     <string name="toast_read_neutral">Some data was not imported.</string>
+    <string name="toast_read_fail">Importing data failed.</string>
     <string name="toast_empty_file">Importing data failed due to an empty file.</string>
     <string name="toast_no_file">Importing data failed due to no file.</string>
-    <string name="toast_read_fail">Importing data failed.</string>
 </resources>

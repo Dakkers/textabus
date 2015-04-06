@@ -6,6 +6,7 @@ My first (and therefore probably awfully written) Android app. It allows you to 
 ## Features
 - adding / editing / removing stops
 - specifying what number to text
+- importing and exporting data
 
 ## TODO
 - ~~add in settings page so users can change the phone number that is texted (so people from different cities can use it)~~
@@ -14,10 +15,10 @@ My first (and therefore probably awfully written) Android app. It allows you to 
 - ~~CODE CLEANUP PLS~~
 - ~~change name of app~~
 - ~~add About section~~
+- ~~change from using SharedPreferences to SQLite~~ (decided to use a stringified JSON object to hold all data)
 - update button sizes. they're a bit too small, it seems.
 - Pebble integration (that was actually the purpose in the beginning)
 - add importing and exporting feature in settings
-- change from using SharedPreferences to SQLite
 
 ## Acknowledgements
 Thanks to:

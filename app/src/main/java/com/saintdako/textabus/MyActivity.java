@@ -21,10 +21,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -35,13 +39,12 @@ public class MyActivity extends Activity {
     ListView listView;
     SimpleAdapter adapter;
     List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-    String SMSNumber;
     SharedPreferences sharedPref;
 
     final public static String name = "name";
     final public static String num = "num";
-    final public static String keyDataSaved    = "textabus.DATA_SAVED_KEY";
     final public static String keySMSNumber    = "textabus.SMS_NUMBER_KEY";
+    final public static String keyUserData     = "textabus.USER_DATA_KEY";
     final public static String keyDataImported = "textabus.DATA_IMPORTED_KEY";
 
     @Override
@@ -53,11 +56,14 @@ public class MyActivity extends Activity {
 
         sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key),
                 this.MODE_PRIVATE);
-        Map<String,?> rawData = sharedPref.getAll();
         SharedPreferences.Editor editor = sharedPref.edit();
 
+        // get user data
+        JSONObject rawData = new JSONObject();
+        String stringifiedData = sharedPref.getString(keyUserData, "NULL");
+
         // user hasn't done anything; here's some default data
-        if (rawData.get(keyDataSaved) == null) {
+        if (stringifiedData.equals("NULL")) {
             // add temp data to listview
             Map<String, String> datum1 = new HashMap<String, String>(2);
             datum1.put(name, getString(R.string.data_default_name1));
@@ -69,33 +75,37 @@ public class MyActivity extends Activity {
             data.add(datum2);
 
             // add default data data to storage
-            editor.putString(getString(R.string.data_default_name1), getString(R.string.data_default_num1));
-            editor.putString(getString(R.string.data_default_name2), getString(R.string.data_default_num2));
+            try {
+                rawData.put(getString(R.string.data_default_name1), getString(R.string.data_default_num1));
+                rawData.put(getString(R.string.data_default_name2), getString(R.string.data_default_num2));
+            } catch (JSONException e) { e.printStackTrace(); }
             editor.putString(keySMSNumber, getString(R.string.data_default_phone_number));
-            editor.putString(keyDataSaved, "true");
+            editor.putString(keyUserData, rawData.toString());
             editor.apply();
-
-            // reinitialize rawData, as sharedPreferences were populated with default values.
-            rawData = sharedPref.getAll();
         } else {
-            // update data
-            List<String> keys = new ArrayList<String>(rawData.keySet());
+            // get user data (rawData) and all stop names (keys)
+            try {
+                rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+            } catch (JSONException e) { }
+            List<String> keys = getKeys(rawData);
+
+            // put user data in proper format for ListView's adapter
             Collections.sort(keys);
             for (String key : keys) {
-                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber) && !key.equals(keyDataImported)) {
-                    Map<String,String> datum = new HashMap<String, String>(2);
-                    datum.put(name, key);
+                Map<String,String> datum = new HashMap<String, String>(2);
+                datum.put(name, key);
+                try {
                     datum.put(num, (String) rawData.get(key));
-                    data.add(datum);
-                }
+                } catch (JSONException e) { e.printStackTrace(); }
+                data.add(datum);
             }
         }
+
+        System.out.println(stringifiedData);
 
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(createListItemClickListener());
         listView.setOnItemLongClickListener(createListItemLongClickListener());
-
-        SMSNumber = (String) rawData.get(keySMSNumber);
 
         adapter = new SimpleAdapter(this, data, R.layout.list_item_layout, new String[]{name, num},
                 new int[]{R.id.stopName, R.id.stopNumber});
@@ -174,19 +184,22 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
-    public String checkInput(Context ctx, String stopName, String stopNumber) {
+    public String checkInput(Context ctx, String oldStopName, String stopName, String stopNumber) {
         /*
         For the dialogs, checks to see if the stop name and stop number are
         good, and then checks to see if the stop name we are trying to
-        add is a duplicate.
+        add is a duplicate, unless the oldStopName == stopName.
         */
         String msg = checkInputHelper(ctx, stopName, stopNumber);
-        // check to see if stop name is being used already
-        for (Map<String, String> datum : data) {
-            String currentStopName = datum.get(name);
-            if (currentStopName.equals(stopName)) {
-                msg = getString(R.string.dialog_error_msg_name_duplicate);
-                break;
+
+        if (!oldStopName.equals(stopName)) {
+            for (Map<String, String> datum : data) {
+                // check to see if stop name is being used already
+                String currentStopName = datum.get(name);
+                if (currentStopName.equals(stopName)) {
+                    msg = getString(R.string.dialog_error_msg_name_duplicate);
+                    break;
+                }
             }
         }
 
@@ -226,7 +239,7 @@ public class MyActivity extends Activity {
             msg = ctx.getString(R.string.dialog_error_msg_num_whitespace);
         else if (stopName.indexOf('\t') != -1)
             msg = ctx.getString(R.string.dialog_error_msg_name_tab);
-        else if (stopName.equals(keyDataSaved) || stopName.equals(keySMSNumber) ||stopName.equals(keyDataImported))
+        else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) ||stopName.equals(keyDataImported))
             msg = ctx.getString(R.string.dialog_error_msg_name_nope);
 
         return msg;
@@ -259,12 +272,13 @@ public class MyActivity extends Activity {
                 btnNeg.setBackgroundColor(getResources().getColor(R.color.background_color));
 
                 btnPos.setOnClickListener(new View.OnClickListener() {
+                    // changing a stop's information
                     @Override
                     public void onClick(View view) {
                         // get new info...
                         String newStopName = getStringFromEditText(dialogView, R.id.itemStopName);
                         String newStopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-                        String msg = checkInput(dialogView.getContext(), newStopName, newStopNumber);
+                        String msg = checkInput(dialogView.getContext(), stopName, newStopName, newStopNumber);
 
                         if (msg.equals("")) {
                             // find out where old datum is in data, replace it with new datum
@@ -281,9 +295,20 @@ public class MyActivity extends Activity {
                                     getString(R.string.preference_file_key),
                                     view.getContext().MODE_PRIVATE
                             );
+
+                            JSONObject rawData;
+                            try {
+                                rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+                                rawData.remove(stopName);
+                                rawData.put(newStopName, newStopNumber);
+                            } catch (JSONException e) {
+                                Toast.makeText(d.getContext(), R.string.toast_save_fail, Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                                return;
+                            }
+
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.remove(stopName);
-                            editor.putString(newStopName, newStopNumber);
+                            editor.putString(keyUserData, rawData.toString());
                             editor.apply();
                             d.dismiss();
                         } else {
@@ -293,26 +318,28 @@ public class MyActivity extends Activity {
                 });
 
                 btnNeg.setOnClickListener(new View.OnClickListener() {
+                    // removing a stop
                     @Override
                     public void onClick(View view) {
-                        for (Map<String, String> datum : data) {
-                            if (datum.get(num).equals(stopNumber)) {
-                                // remove key-value pair from memory
-                                data.remove(datum);
-                                adapter.notifyDataSetChanged();
+                        Map<String, String> datum = new HashMap<String, String>(2);
+                        datum.put(name, stopName);
+                        datum.put(num, stopNumber);
+                        data.remove(datum);
+                        adapter.notifyDataSetChanged();
 
-                                // remove from storage
-                                SharedPreferences sharedPref = view.getContext().getSharedPreferences(
-                                        getString(R.string.preference_file_key),
-                                        view.getContext().MODE_PRIVATE
-                                );
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.remove(stopName);
-                                editor.apply();
-                                d.dismiss();
-                                break;
-                            }
+                        // remove from storage
+                        JSONObject rawData;
+                        try {
+                            rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+                        } catch (JSONException e) {
+                            Toast.makeText(d.getContext(), R.string.toast_general_error, Toast.LENGTH_LONG).show();
+                            return;
                         }
+                        rawData.remove(stopName);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(keyUserData, rawData.toString());
+                        editor.apply();
+                        d.dismiss();
                     }
                 });
             }
@@ -342,7 +369,7 @@ public class MyActivity extends Activity {
                     public void onClick(View view) {
                         String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
                         String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-                        String msg = checkInput(dialogView.getContext(), stopName, stopNumber);
+                        String msg = checkInput(dialogView.getContext(), stopName, stopName, stopNumber);
 
                         if (msg.equals("")) {
                             // add to memory (list view)
@@ -353,12 +380,17 @@ public class MyActivity extends Activity {
                             adapter.notifyDataSetChanged();
 
                             // add to storage
-                            SharedPreferences sharedPref = view.getContext().getSharedPreferences(
-                                    getString(R.string.preference_file_key),
-                                    view.getContext().MODE_PRIVATE
-                            );
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString(stopName, stopNumber);
+                            JSONObject rawData;
+                            try {
+                                rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+                                rawData.put(stopName, stopNumber);
+                            } catch (JSONException e) {
+                                Toast.makeText(d.getContext(), R.string.toast_save_fail, Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                                return;
+                            }
+                            editor.putString(keyUserData, rawData.toString());
                             editor.apply();
                             d.dismiss();
                         } else {
@@ -420,36 +452,41 @@ public class MyActivity extends Activity {
             }
 
             // loop over shared preferences
-            Map<String,?> rawData = sharedPref.getAll();
-            List<String> keys = new ArrayList<String>(rawData.keySet());
+            JSONObject rawData;
+            try {
+                rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+            } catch (JSONException e) {
+                Toast.makeText(this.getApplicationContext(), R.string.toast_read_fail, Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                return;
+            }
+            List<String> keys = getKeys(rawData);
             Integer stopIndex;
             for (String key : keys) {
-                if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber) && !key.equals(keyDataImported)) {
-                    // get index of stopName; if it is null, then it hasn't been added to
-                    // the data in memory. if it is not null, check to see if the stop
-                    // number has changed.
-                    stopIndex = stopIndices.get(key);
-                    if (stopIndex == null) {
+                // get index of stopName; if it is null, then it hasn't been added to
+                // the data in memory. if it is not null, check to see if the stop
+                // number has changed.
+                stopIndex = stopIndices.get(key);
+                if (stopIndex == null) {
+                    newDatum = new HashMap<String, String>(2);
+                    newDatum.put(name, key);
+                    newDatum.put(num, rawData.optString(key));
+                    data.add(newDatum);
+                    dataHasChanged = true;
+                } else {
+                    // get the stop corresponding to the index, then get its stop number
+                    datum = data.get(stopIndex);
+                    stopNumber = datum.get(num);
+
+                    // get the version saved in storage then check if they're not equal
+                    newStopNumber = rawData.optString(key);
+                    if (!stopNumber.equals(newStopNumber)) {
+                        // they're equal; replace old value.
                         newDatum = new HashMap<String, String>(2);
                         newDatum.put(name, key);
-                        newDatum.put(num, (String) rawData.get(key));
-                        data.add(newDatum);
+                        newDatum.put(num, newStopNumber);
+                        data.set(stopIndex, newDatum);
                         dataHasChanged = true;
-                    } else {
-                        // get the stop corresponding to the index, then get its stop number
-                        datum = data.get(stopIndex);
-                        stopNumber = datum.get(num);
-
-                        // get the version saved in storage then check if they're not equal
-                        newStopNumber = (String) rawData.get(key);
-                        if (!stopNumber.equals(newStopNumber)) {
-                            // they're equal; replace old value.
-                            newDatum = new HashMap<String, String>(2);
-                            newDatum.put(name, key);
-                            newDatum.put(num, newStopNumber);
-                            data.set(stopIndex, newDatum);
-                            dataHasChanged = true;
-                        }
                     }
                 }
             }
@@ -471,4 +508,13 @@ public class MyActivity extends Activity {
             return m1.get(name).compareTo(m2.get(name));
         }
     };
+
+    public static List<String> getKeys(JSONObject rawData) {
+        /* Given the rawData (user's data), returns a list of the stop names (keys) */
+        Iterator keysIterator = rawData.keys();
+        List<String> keys = new ArrayList();
+        while (keysIterator.hasNext())
+            keys.add((String) keysIterator.next());
+        return keys;
+    }
 }

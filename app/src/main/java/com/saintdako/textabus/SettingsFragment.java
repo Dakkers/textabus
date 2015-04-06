@@ -9,23 +9,24 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     final public static String keySMSNumber    = "textabus.SMS_NUMBER_KEY";
-    final public static String keyDataSaved    = "textabus.DATA_SAVED_KEY";
     final public static String keyDataImported = "textabus.DATA_IMPORTED_KEY";
+    final public static String keyUserData     = "textabus.USER_DATA_KEY";
     final public Integer LENGTH_LONG  = Toast.LENGTH_LONG;
     final public Integer LENGTH_SHORT = Toast.LENGTH_SHORT;
     SharedPreferences sharedPref;
@@ -54,7 +55,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 if (isExternalStorageWritable())
                     exportData(preference);
                 else
-                    Toast.makeText(preference.getContext(), getString(R.string.toast_not_writable), LENGTH_LONG).show();
+                    Toast.makeText(preference.getContext(), R.string.toast_not_writable, LENGTH_LONG).show();
                 return true;
             }
         });
@@ -118,29 +119,21 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         String pattern = "[^0-9]";
         Pattern r = Pattern.compile(pattern);
 
-        if (r.matcher(num).find())
-            return false;
+        return !r.matcher(num).find();
 
-        return true;
     }
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     public void exportData(Preference preference) {
@@ -151,16 +144,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         */
 
         // get shared pref, create string to be written to file
-        Map<String,?> rawData = sharedPref.getAll();
+        JSONObject rawData = new JSONObject().optJSONObject(sharedPref.getString(keyUserData, "NULL"));
         String content = "";
 
         // loop over data
-        List<String> keys = new ArrayList<String>(rawData.keySet());
+        List<String> keys = getKeys(rawData);
         Collections.sort(keys);
         for (String key : keys) {
-            // key == stop name
-            if (!key.equals(keyDataSaved) && !key.equals(keySMSNumber) && !key.equals(keyDataImported))
-                content += key + "\t" + rawData.get(key) + "\n";
+            try {
+                // key == stop name
+                content += key + "\t" + rawData.getString(key) + "\n";
+            } catch (JSONException e) { }
         }
 
         // set up file to write to
@@ -186,6 +180,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             return;
         }
 
+        JSONObject rawData;
+        try {
+            rawData = new JSONObject(sharedPref.getString(keyUserData, "NULL"));
+        } catch (JSONException e) {
+            Toast.makeText(ctx, R.string.toast_read_fail, LENGTH_LONG).show();
+            e.printStackTrace();
+            return;
+        }
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line, name, num, msg;
@@ -196,7 +199,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 // read each line, split through tab, check name & num
                 splitLine = line.split("\t");
                 if (splitLine.length != 2) {
-                    Toast.makeText(ctx, R.string.toast_read_fail, LENGTH_SHORT).show();
+                    Toast.makeText(ctx, R.string.toast_read_fail, LENGTH_LONG).show();
                     return;
                 }
 
@@ -205,10 +208,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 msg = checkInput(ctx, name, num);
 
                 // if input is good, put into storage
-                if (msg.equals(""))
-                    editor.putString(name, num);
+                if (msg.equals("")) {
+                    try {
+                        rawData.put(name, num);
+                    } catch (JSONException e) { e.printStackTrace(); }
+
                 // otherwise, let the user know later that a line failed.
-                else
+                } else
                     allLinesImported = false;
 
                 emptyFile = false;
@@ -223,6 +229,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             // close reader, update sharedpreferences
             br.close();
             editor.putString(keyDataImported, "true");
+            editor.putString(keyUserData, rawData.toString());
             editor.apply();
 
             if (allLinesImported)
@@ -231,11 +238,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 Toast.makeText(ctx, R.string.toast_read_neutral, LENGTH_SHORT).show();
         }
         catch (IOException e) {
-            Toast.makeText(ctx, R.string.toast_read_fail, LENGTH_SHORT).show();
+            Toast.makeText(ctx, R.string.toast_read_fail, LENGTH_LONG).show();
         }
     }
 
     public static String checkInput(Context ctx, String stopName, String stopNumber) {
         return com.saintdako.textabus.MyActivity.checkInputHelper(ctx, stopName, stopNumber);
+    }
+
+    public static List<String> getKeys(JSONObject rawData) {
+        return com.saintdako.textabus.MyActivity.getKeys(rawData);
     }
 }
