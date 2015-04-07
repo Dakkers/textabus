@@ -14,14 +14,14 @@
 
     <ListView
         android:id="@+id/list"
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
-        android:scrollbarStyle="outsideInset"></ListView>
+        android:layout_weight="1"></ListView>
     <ImageView
         android:id="@+id/iconAdd"
         android:src="@android:drawable/ic_menu_add"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"

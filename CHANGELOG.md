@@ -1,7 +1,11 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.5.2 (Beta)
+## V 0.5.3 (Beta)
+- Remove scrollbars from main activity
+- Widget exists, doesn't actually work yet though! (v0.6.0)
+
+## [V 0.5.2 (Beta)](https://github.com/StDako/textabus/commit/b8045987763f828ac5efe1af14377b4c400d65ae)
 - Prevent user from entering in a tab in the stop number, as well
 - Exporting data works again
 

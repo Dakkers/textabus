@@ -16,9 +16,10 @@ My first (and therefore probably awfully written) Android app. It allows you to 
 - ~~change name of app~~
 - ~~add About section~~
 - ~~change from using SharedPreferences to SQLite~~ (decided to use a stringified JSON object to hold all data)
+- ~~add importing and exporting feature in settings~~
+- ~~create a widget~~
 - update button sizes. they're a bit too small, it seems.
 - Pebble integration (that was actually the purpose in the beginning)
-- add importing and exporting feature in settings
 
 ## Acknowledgements
 Thanks to:

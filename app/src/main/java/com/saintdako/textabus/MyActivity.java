@@ -101,8 +101,6 @@ public class MyActivity extends Activity {
             }
         }
 
-        System.out.println(stringifiedData);
-
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(createListItemClickListener());
         listView.setOnItemLongClickListener(createListItemLongClickListener());
@@ -197,7 +195,7 @@ public class MyActivity extends Activity {
                 // check to see if stop name is being used already
                 String currentStopName = datum.get(name);
                 if (currentStopName.equals(stopName)) {
-                    msg = getString(R.string.dialog_error_msg_name_duplicate);
+                    msg = getString(R.string.toast_error_msg_name_duplicate);
                     break;
                 }
             }
@@ -242,7 +240,7 @@ public class MyActivity extends Activity {
         else if (stopNumber.indexOf('\t') != -1)
             msg = ctx.getString(R.string.toast_error_msg_num_tab);
         else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) || stopName.equals(keyDataImported))
-            msg = ctx.getString(R.string.dialog_error_msg_name_nope);
+            msg = ctx.getString(R.string.toast_error_msg_name_nope);
 
         return msg;
     }
