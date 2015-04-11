@@ -38,7 +38,7 @@ public class MyActivity extends Activity {
 
     ListView listView;
     SimpleAdapter adapter;
-    List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+    List<Map<String, String>> data = new ArrayList<>();
     SharedPreferences sharedPref;
 
     final public static String name = "name";
@@ -65,11 +65,11 @@ public class MyActivity extends Activity {
         // user hasn't done anything; here's some default data
         if (stringifiedData.equals("NULL")) {
             // add temp data to listview
-            Map<String, String> datum1 = new HashMap<String, String>(2);
+            Map<String, String> datum1 = new HashMap<>(2);
             datum1.put(name, getString(R.string.data_default_name1));
             datum1.put(num, getString(R.string.data_default_num1));
             data.add(datum1);
-            Map<String, String> datum2 = new HashMap<String, String>(2);
+            Map<String, String> datum2 = new HashMap<>(2);
             datum2.put(name, getString(R.string.data_default_name2));
             datum2.put(num, getString(R.string.data_default_num2));
             data.add(datum2);
@@ -92,7 +92,7 @@ public class MyActivity extends Activity {
             // put user data in proper format for ListView's adapter
             Collections.sort(keys);
             for (String key : keys) {
-                Map<String,String> datum = new HashMap<String, String>(2);
+                Map<String,String> datum = new HashMap<>(2);
                 datum.put(name, key);
                 try {
                     datum.put(num, (String) rawData.get(key));
@@ -235,10 +235,10 @@ public class MyActivity extends Activity {
             msg = ctx.getString(R.string.toast_error_msg_num_invalidchars);
         else if (r2.matcher(stopNumber).find())
             msg = ctx.getString(R.string.toast_error_msg_num_whitespace);
-        else if (stopName.indexOf('\t') != -1)
-            msg = ctx.getString(R.string.toast_error_msg_name_tab);
-        else if (stopNumber.indexOf('\t') != -1)
-            msg = ctx.getString(R.string.toast_error_msg_num_tab);
+        else if (stopName.indexOf('\t') != -1   || stopName.indexOf('\n') != 1)
+            msg = ctx.getString(R.string.toast_error_msg_name_tabline);
+        else if (stopNumber.indexOf('\t') != -1 || stopNumber.indexOf('\n') != 1)
+            msg = ctx.getString(R.string.toast_error_msg_num_tabline);
         else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) || stopName.equals(keyDataImported))
             msg = ctx.getString(R.string.toast_error_msg_name_nope);
 
@@ -282,7 +282,7 @@ public class MyActivity extends Activity {
 
                         if (msg.equals("")) {
                             // find out where old datum is in data, replace it with new datum
-                            Map<String, String> newDatum, oldDatum = new HashMap<String, String>(2);
+                            Map<String, String> newDatum, oldDatum = new HashMap<>(2);
                             oldDatum.put(name, stopName);
                             oldDatum.put(num, stopNumber);
                             newDatum = data.get(data.indexOf(oldDatum));
@@ -321,7 +321,7 @@ public class MyActivity extends Activity {
                     // removing a stop
                     @Override
                     public void onClick(View view) {
-                        Map<String, String> datum = new HashMap<String, String>(2);
+                        Map<String, String> datum = new HashMap<>(2);
                         datum.put(name, stopName);
                         datum.put(num, stopNumber);
                         data.remove(datum);
@@ -373,7 +373,7 @@ public class MyActivity extends Activity {
 
                         if (msg.equals("")) {
                             // add to memory (list view)
-                            Map<String,String> datum = new HashMap<String, String>(2);
+                            Map<String,String> datum = new HashMap<>(2);
                             datum.put(name, stopName);
                             datum.put(num, stopNumber);
                             data.add(datum);
@@ -429,7 +429,6 @@ public class MyActivity extends Activity {
         Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
     }
-
     @Override
     public void onResume() {
         /* Contains logic for adding imported data to view. */
@@ -445,7 +444,7 @@ public class MyActivity extends Activity {
 
             // loop over data, get the location (index) of each stop
             // use a map to hold the data (stopName --> index)
-            Map<String, Integer> stopIndices = new HashMap<String, Integer>(data.size());
+            Map<String, Integer> stopIndices = new HashMap<>(data.size());
             for (int i = 0; i < data.size(); i++) {
                 stopName = data.get(i).get(name);
                 stopIndices.put(stopName, i);
@@ -468,7 +467,7 @@ public class MyActivity extends Activity {
                 // number has changed.
                 stopIndex = stopIndices.get(key);
                 if (stopIndex == null) {
-                    newDatum = new HashMap<String, String>(2);
+                    newDatum = new HashMap<>(2);
                     newDatum.put(name, key);
                     newDatum.put(num, rawData.optString(key));
                     data.add(newDatum);
@@ -482,7 +481,7 @@ public class MyActivity extends Activity {
                     newStopNumber = rawData.optString(key);
                     if (!stopNumber.equals(newStopNumber)) {
                         // they're equal; replace old value.
-                        newDatum = new HashMap<String, String>(2);
+                        newDatum = new HashMap<>(2);
                         newDatum.put(name, key);
                         newDatum.put(num, newStopNumber);
                         data.set(stopIndex, newDatum);

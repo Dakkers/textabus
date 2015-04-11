@@ -26,6 +26,19 @@
             android:label="@string/title_activity_set_preference"
             android:windowSoftInputMode="adjustPan">
         </activity>
+
+        <!--
+        <receiver android:name=".ListWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget" />
+        </receiver>
+
+        <service android:name=".WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        -->
     </application>
 
 </manifest>
