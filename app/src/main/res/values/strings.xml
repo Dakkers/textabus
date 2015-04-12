@@ -77,7 +77,7 @@
     <string name="pref_license_data">http://www.gnu.org/licenses/gpl-2.0.txt</string>
 
     <string name="pref_version_title">Version</string>
-    <string name="pref_version_summary">0.5.4 (Beta)</string>
+    <string name="pref_version_summary">0.5.5 (Beta)</string>
 
     <!-- Toasts for preferences -->
     <string name="toast_not_writable">"Insufficient permissions to save file.</string>

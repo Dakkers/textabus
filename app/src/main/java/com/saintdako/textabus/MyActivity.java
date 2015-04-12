@@ -182,15 +182,15 @@ public class MyActivity extends Activity {
         return dialogView;
     }
 
-    public String checkInput(Context ctx, String oldStopName, String stopName, String stopNumber) {
+    public String checkInput(Context ctx, String stopName, String stopNumber, Boolean checkDupes) {
         /*
         For the dialogs, checks to see if the stop name and stop number are
         good, and then checks to see if the stop name we are trying to
-        add is a duplicate, unless the oldStopName == stopName.
+        add is a duplicate if checkDupes is true.
         */
         String msg = checkInputHelper(ctx, stopName, stopNumber);
 
-        if (!oldStopName.equals(stopName)) {
+        if (checkDupes) {
             for (Map<String, String> datum : data) {
                 // check to see if stop name is being used already
                 String currentStopName = datum.get(name);
@@ -235,9 +235,9 @@ public class MyActivity extends Activity {
             msg = ctx.getString(R.string.toast_error_msg_num_invalidchars);
         else if (r2.matcher(stopNumber).find())
             msg = ctx.getString(R.string.toast_error_msg_num_whitespace);
-        else if (stopName.indexOf('\t') != -1   || stopName.indexOf('\n') != 1)
+        else if (stopName.indexOf('\t') != -1   || stopName.contains("\n"))
             msg = ctx.getString(R.string.toast_error_msg_name_tabline);
-        else if (stopNumber.indexOf('\t') != -1 || stopNumber.indexOf('\n') != 1)
+        else if (stopNumber.indexOf('\t') != -1 || stopNumber.contains("\n"))
             msg = ctx.getString(R.string.toast_error_msg_num_tabline);
         else if (stopName.equals(keyUserData) || stopName.equals(keySMSNumber) || stopName.equals(keyDataImported))
             msg = ctx.getString(R.string.toast_error_msg_name_nope);
@@ -278,16 +278,18 @@ public class MyActivity extends Activity {
                         // get new info...
                         String newStopName = getStringFromEditText(dialogView, R.id.itemStopName);
                         String newStopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-                        String msg = checkInput(dialogView.getContext(), stopName, newStopName, newStopNumber);
+                        Boolean checkDupes = (!stopName.equals(newStopName));
+                        String msg = checkInput(dialogView.getContext(), newStopName, newStopNumber, checkDupes);
 
                         if (msg.equals("")) {
                             // find out where old datum is in data, replace it with new datum
-                            Map<String, String> newDatum, oldDatum = new HashMap<>(2);
+                            Map<String, String> newDatum = new HashMap<>(2), oldDatum = new HashMap<>(2);
                             oldDatum.put(name, stopName);
                             oldDatum.put(num, stopNumber);
-                            newDatum = data.get(data.indexOf(oldDatum));
+                            data.remove(oldDatum);
                             newDatum.put(name, newStopName);
                             newDatum.put(num, newStopNumber);
+                            insertStop(data, newDatum);
                             adapter.notifyDataSetChanged();
 
                             // update datum in storage
@@ -369,14 +371,15 @@ public class MyActivity extends Activity {
                     public void onClick(View view) {
                         String stopName = getStringFromEditText(dialogView, R.id.itemStopName);
                         String stopNumber = getStringFromEditText(dialogView, R.id.itemStopNumber);
-                        String msg = checkInput(dialogView.getContext(), stopName, stopName, stopNumber);
+                        String msg = checkInput(dialogView.getContext(), stopName, stopNumber, true);
 
                         if (msg.equals("")) {
                             // add to memory (list view)
                             Map<String,String> datum = new HashMap<>(2);
                             datum.put(name, stopName);
                             datum.put(num, stopNumber);
-                            data.add(datum);
+                            insertStop(data, datum);
+//                            data.add(datum);
                             adapter.notifyDataSetChanged();
 
                             // add to storage
@@ -426,8 +429,8 @@ public class MyActivity extends Activity {
 
     public void veryLongToast(Context ctx, String msg) {
         // Makes a toast appear for 5.5 seconds (short + long)
-        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onResume() {
@@ -515,5 +518,19 @@ public class MyActivity extends Activity {
         while (keysIterator.hasNext())
             keys.add((String) keysIterator.next());
         return keys;
+    }
+
+    public static void insertStop(List<Map<String,String>> data, Map<String,String> stop) {
+        Integer N = data.size();
+        String stopName = stop.get(name), currentStopName;
+
+        int i;
+        for (i=0; i<N; i++) {
+            currentStopName = data.get(i).get(name);
+            if (currentStopName.compareTo(stopName) > 0)
+                break;
+        }
+
+        data.add(i, stop);
     }
 }

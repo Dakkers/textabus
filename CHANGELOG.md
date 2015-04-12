@@ -1,10 +1,15 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.5.4 (Beta)
+## V 0.5.5 (Beta)
+- Adding a new stop and editing a stop name will insert the stop in the correct (alphabetized) order
+- ACTUALLY prevent user from entering in a newline in stop name or number
+- Fix bug in adding duplicate stop names (again, apparently I didn't fix it last time...)
+
+## [V 0.5.4 (Beta)](https://github.com/SaintDako/textabus/commit/4dc1253d4430b16d7aabcd6feec03f724cfbee63)
 - Prevent user from entering in a newline in the stop name or stop number
 
-## V 0.5.3 (Beta)
+## [V 0.5.3 (Beta)](https://github.com/SaintDako/textabus/commit/34dfe34cb25b2edd6d7eeebad0784b324a25796a)
 - Remove scrollbars from main activity
 - Widget exists, doesn't actually work yet though! (v0.6.0)
 
