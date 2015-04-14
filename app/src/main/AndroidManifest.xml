@@ -27,7 +27,6 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
 
-        <!--
         <receiver android:name=".ListWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -38,7 +37,6 @@
 
         <service android:name=".WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        -->
     </application>
 
 </manifest>

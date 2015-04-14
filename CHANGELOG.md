@@ -1,7 +1,11 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.5.5 (Beta)
+## V 0.6.0 (Beta)
+- Add basic widget functionality -- stops are not automatically changed when the data in the app changes, but removing and re-adding the widget will show new stops
+- Texting is doable through widget!
+
+## [V 0.5.5 (Beta)](https://github.com/SaintDako/textabus/commit/6a43b575b8796fd3d231f7b803bd0438e91e277f)
 - Adding a new stop and editing a stop name will insert the stop in the correct (alphabetized) order
 - ACTUALLY prevent user from entering in a newline in stop name or number
 - Fix bug in adding duplicate stop names (again, apparently I didn't fix it last time...)
