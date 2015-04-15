@@ -3,19 +3,18 @@
     android:id="@+id/widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:background="@color/background_color"
     android:scrollbars="none"
-    tools:context=".AppWidget">
+    tools:context=".ListWidgetProvider">
 
     <TextView
-        android:text="TextABus"
+        android:text="@string/app_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textStyle="bold"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:background="@color/header_color"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
@@ -29,5 +28,21 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:scrollbarStyle="outsideInset"></ListView>
+
+    <!--<Button-->
+        <!--android:id="@+id/btn_refresh"-->
+        <!--android:text="Refresh"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|center"-->
+        <!--android:textSize="16sp"-->
+        <!--android:background="@color/header_color"-->
+        <!--android:textColor="#FFFFFF"-->
+        <!--android:textAlignment="center"-->
+        <!--android:gravity="center"-->
+        <!--android:paddingTop="0dp"-->
+        <!--android:paddingBottom="0dp"-->
+        <!--android:layout_margin="0dp"-->
+        <!--android:padding="0dp"></Button>-->
 
 </LinearLayout>

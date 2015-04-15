@@ -1,7 +1,12 @@
 # Change Log
 A brief summary of changes made in the app.
 
-## V 0.6.0 (Beta)
+## V 0.6.1 (Beta)
+- Stops in widget are now automatically added, edited and deleted!
+- Added a widget preview
+- Default height and width of widget are both 2 cells, with a minimum of 1 cell and 2 cells respectively
+
+## [V 0.6.0 (Beta)](https://github.com/SaintDako/textabus/commit/683f16a9473072333938adb1fee3a565cfa2035f)
 - Add basic widget functionality -- stops are not automatically changed when the data in the app changes, but removing and re-adding the widget will show new stops
 - Texting is doable through widget!
 

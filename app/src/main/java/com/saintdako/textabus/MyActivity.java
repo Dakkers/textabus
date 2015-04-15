@@ -308,10 +308,10 @@ public class MyActivity extends Activity {
                                 e.printStackTrace();
                                 return;
                             }
-
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(keyUserData, rawData.toString());
                             editor.apply();
+                            updateWidget(d.getContext());
                             d.dismiss();
                         } else {
                             veryLongToast(d.getContext(), msg);
@@ -341,6 +341,7 @@ public class MyActivity extends Activity {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(keyUserData, rawData.toString());
                         editor.apply();
+                        updateWidget(d.getContext());
                         d.dismiss();
                     }
                 });
@@ -395,6 +396,7 @@ public class MyActivity extends Activity {
                             }
                             editor.putString(keyUserData, rawData.toString());
                             editor.apply();
+                            updateWidget(d.getContext());
                             d.dismiss();
                         } else {
                             veryLongToast(d.getContext(), msg);
@@ -496,6 +498,7 @@ public class MyActivity extends Activity {
             if (dataHasChanged) {
                 Collections.sort(data, stopNameComparator);
                 adapter.notifyDataSetChanged();
+                updateWidget(this.getApplicationContext());
             }
 
             editor.putString(keyDataImported, "false");
@@ -532,5 +535,11 @@ public class MyActivity extends Activity {
         }
 
         data.add(i, stop);
+    }
+
+    public void updateWidget(Context ctx) {
+        Intent i = new Intent(ctx, ListWidgetProvider.class);
+        i.setAction(ListWidgetProvider.REFRESH);
+        sendBroadcast(i);
     }
 }

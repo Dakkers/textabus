@@ -97,7 +97,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         List<String> keys = getKeys(rawData);
         Collections.sort(keys);
         mWidgetItems = keys;
-        System.out.println(mWidgetItems);
     }
 
     @Override
